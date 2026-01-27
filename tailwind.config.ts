@@ -28,12 +28,12 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				
-				/* Lime green system */
-				lime: {
-					DEFAULT: 'hsl(var(--lime))',
-					dark: 'hsl(var(--lime-dark))',
-					light: 'hsl(var(--lime-light))',
-					glow: 'hsl(var(--lime-glow))',
+				/* Surf Orange system */
+				orange: {
+					DEFAULT: 'hsl(var(--orange))',
+					dark: 'hsl(var(--orange-dark))',
+					light: 'hsl(var(--orange-light))',
+					glow: 'hsl(var(--orange-glow))',
 				},
 				
 				/* Glass effects */
@@ -70,7 +70,7 @@ export default {
 				},
 			},
 			backgroundImage: {
-				'gradient-lime': 'var(--gradient-lime)',
+				'gradient-orange': 'var(--gradient-orange)',
 				'gradient-dark': 'var(--gradient-dark)',
 				'gradient-glass': 'var(--gradient-glass)',
 			},
@@ -133,10 +133,10 @@ export default {
 				},
 				'glow-pulse': {
 					'0%, 100%': {
-						boxShadow: '0 0 20px hsl(84 81% 44% / 0.3)'
+						boxShadow: '0 0 20px hsl(30 90% 55% / 0.3)'
 					},
 					'50%': {
-						boxShadow: '0 0 40px hsl(84 81% 44% / 0.6)'
+						boxShadow: '0 0 40px hsl(30 90% 55% / 0.6)'
 					}
 				},
 				'float-bg': {

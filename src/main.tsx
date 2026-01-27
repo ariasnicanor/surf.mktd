@@ -17,4 +17,4 @@ const hideSplash = () => {
 createRoot(document.getElementById("root")!).render(<App />);
 
 
-setTimeout(hideSplash, 1000);
+setTimeout(hideSplash, 2500);

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -9,63 +9,58 @@
 
 /* --- Estilos del Splash Screen --- */
 #loading-splash {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #000; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; 
-    opacity: 1;
-    transition: opacity 0.5s ease-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.5s ease-out;
 }
 .fade-out {
-    opacity: 0 !important;
-    pointer-events: none;
+  opacity: 0 !important;
+  pointer-events: none;
 }
 
 /* --- Estilos del Logo Animado --- */
 .logo-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-    font-size: 4em;
-    color: #fff;
-    font-weight: bold;
-    line-height: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-size: 4em;
+  color: #fff;
+  font-weight: bold;
+  line-height: 1;
 }
-.logo-dot {
-    width: 10px;
-    height: 10px;
-    background-color: #90ee02;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 5px;
-    position: relative;
-    top: 12px; 
-    animation: dynamicBounce 0.8s infinite cubic-bezier(0.68, -0.55, 0.27, 1.55);
+.logo-surfboard {
+  width: 40px;
+  height: 80px;
+  display: inline-block;
+  margin-right: 15px;
+  position: relative;
+  /* top: 10px; */
+  animation: surfRide 2s ease-in-out infinite;
 }
 .logo-text {
-    color: #fff;
+  color: #fff;
 }
 
 /* --- Definición de la Animación (@keyframes) --- */
-@keyframes dynamicBounce {
-    0% {
-        transform: translateY(-8px) scaleY(1);
-    }
-    50% {
-        transform: translateY(0) scale(1.1, 0.9);
-    }
-    100% {
-        transform: translateY(-8px) scaleY(1);
-    }
+@keyframes surfRide {
+  0%, 100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(5deg);
+  }
 }
 
-/* Punto Lima Design System */
+/* Surf Orange design system */
 
 @layer base {
   :root {
@@ -79,16 +74,16 @@
     --glass: 0 0% 10%;
     --glass-border: 0 0% 20%;
 
-    /* Lime green accent system */
-    --lime: 84 81% 44%;
-    --lime-dark: 84 100% 35%;
-    --lime-light: 84 81% 60%;
-    --lime-glow: 84 81% 44%;
+    /* Surf Orange accent system */
+    --orange: 30 90% 55%;
+    --orange-dark: 30 100% 45%;
+    --orange-light: 30 90% 65%;
+    --orange-glow: 30 90% 55%;
 
     /* Interactive states */
-    --primary: 84 81% 44%;
+    --primary: 30 90% 55%;
     --primary-foreground: 0 0% 3%;
-    --primary-hover: 84 100% 35%;
+    --primary-hover: 30 100% 45%;
 
     /* Secondary colors */
     --secondary: 0 0% 15%;
@@ -110,20 +105,32 @@
     /* Borders and inputs */
     --border: 0 0% 20%;
     --input: 0 0% 15%;
-    --ring: 84 81% 44%;
+    --ring: 30 90% 55%;
 
     /* Design system effects */
     --glass-bg: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(255, 255, 255, 0.1);
     --blur-backdrop: blur(20px);
-    
+
     /* Gradients */
-    --gradient-lime: linear-gradient(135deg, hsl(84 81% 44%) 0%, hsl(84 100% 35%) 100%);
-    --gradient-dark: linear-gradient(135deg, hsl(0 0% 3%) 0%, hsl(0 0% 8%) 100%);
-    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    --gradient-orange: linear-gradient(
+      135deg,
+      hsl(30 90% 55%) 0%,
+      hsl(30 100% 45%) 100%
+    );
+    --gradient-dark: linear-gradient(
+      135deg,
+      hsl(0 0% 3%) 0%,
+      hsl(0 0% 8%) 100%
+    );
+    --gradient-glass: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
 
     /* Shadows */
-    --shadow-glow: 0 0 40px hsl(84 81% 44% / 0.3);
+    --shadow-glow: 0 0 40px hsl(30 90% 55% / 0.3);
     --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.3);
     --shadow-sharp: 0 4px 20px rgba(0, 0, 0, 0.4);
 
@@ -138,7 +145,11 @@
 
   body {
     @apply bg-background text-foreground font-inter;
-    background: radial-gradient(ellipse at top, hsl(0 0% 8%) 0%, hsl(0 0% 3%) 100%);
+    background: radial-gradient(
+      ellipse at top,
+      hsl(0 0% 8%) 0%,
+      hsl(0 0% 3%) 100%
+    );
     min-height: 100vh;
   }
 
@@ -159,16 +170,23 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-  /* Lime glow effect */
-  .lime-glow {
+  /* Orange glow effect */
+  .orange-glow {
     box-shadow: var(--shadow-glow);
   }
 
   /* Hero background with animated gradient */
   .hero-bg {
-    background: 
-      radial-gradient(ellipse at 20% 50%, hsla(84, 81%, 44%, 0.1) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 0%, hsla(84, 81%, 44%, 0.08) 0%, transparent 50%),
+    background: radial-gradient(
+        ellipse at 20% 50%,
+        hsla(30, 90%, 55%, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        ellipse at 80% 0%,
+        hsla(30, 90%, 55%, 0.08) 0%,
+        transparent 50%
+      ),
       linear-gradient(135deg, hsl(0 0% 3%) 0%, hsl(0 0% 8%) 100%);
   }
 
@@ -178,13 +196,13 @@
   }
 
   .animated-underline::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 0;
     height: 2px;
     bottom: -4px;
     left: 0;
-    background: var(--gradient-lime);
+    background: var(--gradient-orange);
     transition: width 0.3s ease;
   }
 

@@ -17,9 +17,31 @@ const Contact = () => {
   const { toast } = useToast();
 
   
-  const EMAILJS_SERVICE_ID = (import.meta as any).env?.VITE_EMAILJS_SERVICE_ID || (globalThis as any).process?.env?.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-  const EMAILJS_TEMPLATE_ID = (import.meta as any).env?.VITE_EMAILJS_TEMPLATE_ID || (globalThis as any).process?.env?.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-  const EMAILJS_PUBLIC_KEY = (import.meta as any).env?.VITE_EMAILJS_PUBLIC_KEY || (globalThis as any).process?.env?.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+  // Helper interfaces for environment variable access
+  interface EnvConfig {
+    VITE_EMAILJS_SERVICE_ID?: string;
+    VITE_EMAILJS_TEMPLATE_ID?: string;
+    VITE_EMAILJS_PUBLIC_KEY?: string;
+    [key: string]: string | undefined;
+  }
+
+  interface GlobalConfig {
+    process?: {
+      env?: {
+        NEXT_PUBLIC_EMAILJS_SERVICE_ID?: string;
+        NEXT_PUBLIC_EMAILJS_TEMPLATE_ID?: string;
+        NEXT_PUBLIC_EMAILJS_PUBLIC_KEY?: string;
+        [key: string]: string | undefined;
+      };
+    };
+  }
+
+  const viteEnv = (import.meta as unknown as { env: EnvConfig }).env;
+  const nextEnv = (globalThis as unknown as GlobalConfig).process?.env;
+
+  const EMAILJS_SERVICE_ID = viteEnv?.VITE_EMAILJS_SERVICE_ID || nextEnv?.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+  const EMAILJS_TEMPLATE_ID = viteEnv?.VITE_EMAILJS_TEMPLATE_ID || nextEnv?.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+  const EMAILJS_PUBLIC_KEY = viteEnv?.VITE_EMAILJS_PUBLIC_KEY || nextEnv?.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
   useEffect(() => {
     if (EMAILJS_PUBLIC_KEY) {
@@ -147,7 +169,7 @@ const Contact = () => {
         <div className="text-center mb-16">
           <h2 className={`text-4xl md:text-5xl font-bold mb-6 transition-all duration-1000 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'
             }`}>
-            ¿Listo para <span className="text-lime">impulsar</span> tu negocio?
+            ¿Listo para <span className="text-orange">impulsar</span> tu negocio?
           </h2>
           <p className={`text-xl text-muted-foreground max-w-2xl mx-auto transition-all duration-1000 delay-200 ${isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'
             }`}>
@@ -174,7 +196,7 @@ const Contact = () => {
                       type="text"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="bg-input border-glass-border focus:border-lime focus:ring-lime"
+                      className="bg-input border-glass-border focus:border-orange focus:ring-orange"
                       placeholder="Tu nombre completo"
                       required
                     />
@@ -189,7 +211,7 @@ const Contact = () => {
                       type="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="bg-input border-glass-border focus:border-lime focus:ring-lime"
+                      className="bg-input border-glass-border focus:border-orange focus:ring-orange"
                       placeholder="tu@email.com"
                       required
                     />
@@ -205,7 +227,7 @@ const Contact = () => {
                     name="message"
                     value={formData.message}
                     onChange={handleInputChange}
-                    className="bg-input border-glass-border focus:border-lime focus:ring-lime min-h-[120px]"
+                    className="bg-input border-glass-border focus:border-orange focus:ring-orange min-h-[120px]"
                     placeholder="Cuéntanos sobre tu proyecto..."
                     required
                   />
@@ -213,7 +235,7 @@ const Contact = () => {
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-lime hover:bg-lime-dark text-primary-foreground font-semibold py-3 rounded-xl transition-all duration-300 hover:shadow-glow"
+                  className="w-full bg-gradient-orange hover:bg-orange-dark text-primary-foreground font-semibold py-3 rounded-xl transition-all duration-300 hover:shadow-glow"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Enviando...' : 'Enviar mensaje'}
@@ -238,7 +260,7 @@ const Contact = () => {
               <div className="space-y-6">
                 {contactInfo.map((info, index) => (
                   <div key={index} className="flex items-center space-x-4 glass-card rounded-xl p-4 hover:scale-105 transition-transform duration-300">
-                    <div className="bg-lime rounded-lg p-3">
+                    <div className="bg-orange rounded-lg p-3">
                       <info.icon className="w-6 h-6 text-primary-foreground" />
                     </div>
                     <div>
@@ -259,7 +281,7 @@ const Contact = () => {
                 </p>
                 <Button
                   variant="outline"
-                  className="border-lime text-lime hover:bg-lime hover:text-primary-foreground transition-all duration-300"
+                  className="border-orange text-orange hover:bg-orange hover:text-primary-foreground transition-all duration-300"
                 >
                   Agendar consulta
                 </Button>

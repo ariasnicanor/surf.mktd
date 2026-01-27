@@ -38,12 +38,12 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         {/* Main Footer */}
         <div className="py-16 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Info de .Lima */}
+          {/* Info de .Surf */}
           <div className="lg:col-span-2">
             <div className="mb-6">
               <h3 className="text-3xl font-bold">
-                <span className="text-foreground">Punto</span>
-                <span className="text-lime">Lima</span>
+                <span className="text-foreground">Surf</span>
+                <span className="text-orange">Marketing</span>
               </h3>
               <p className="text-muted-foreground mt-2 text-lg">
                 Ideas que impactan. Historias que venden.
@@ -57,19 +57,19 @@ const Footer = () => {
             {/* Contact Info */}
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-lime" />
-                <span className="text-muted-foreground">contactopuntolima@gmail.com</span>
+                <Mail className="w-5 h-5 text-orange" />
+                <span className="text-muted-foreground">contactosurfmarketing@gmail.com</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-lime" />
+                <Phone className="w-5 h-5 text-orange" />
                 <span className="text-muted-foreground">+5492664258094</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-lime" />
+                <Phone className="w-5 h-5 text-orange" />
                 <span className="text-muted-foreground">+5492664336855</span>
               </div>
               <div className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-lime" />
+                <MapPin className="w-5 h-5 text-orange" />
                 <span className="text-muted-foreground">San Luis, Argentina</span>
               </div>
             </div>
@@ -83,7 +83,7 @@ const Footer = () => {
                 <li key={link.id}>
                   <button
                     onClick={() => scrollToSection(link.id)}
-                    className="text-muted-foreground hover:text-lime transition-colors duration-300 animated-underline"
+                    className="text-muted-foreground hover:text-orange transition-colors duration-300 animated-underline"
                   >
                     {link.name}
                   </button>
@@ -98,7 +98,7 @@ const Footer = () => {
             <ul className="space-y-3">
               {services.map((service, index) => (
                 <li key={index}>
-                  <span className="text-muted-foreground hover:text-lime transition-colors duration-300 cursor-pointer animated-underline">
+                  <span className="text-muted-foreground hover:text-orange transition-colors duration-300 cursor-pointer animated-underline">
                     {service}
                   </span>
                 </li>
@@ -112,7 +112,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             {/* Copyright */}
             <div className="text-muted-foreground text-sm">
-              © {new Date().getFullYear()} Punto Lima. Todos los derechos reservados.
+              © {new Date().getFullYear()} Surf Marketing. Todos los derechos reservados.
             </div>
 
             {/* Social Links */}
@@ -123,7 +123,7 @@ const Footer = () => {
                   key={index}
                   href={social.href}
                   aria-label={social.label}
-                  className="bg-muted rounded-lg p-2 hover:bg-lime hover:scale-110 transition-all duration-300 group"
+                  className="bg-muted rounded-lg p-2 hover:bg-orange hover:scale-110 transition-all duration-300 group"
                 >
                   <social.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary-foreground" />
                 </a>

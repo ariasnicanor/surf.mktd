@@ -50,7 +50,7 @@ const Clients = () => {
           <h2 className={`text-4xl md:text-5xl font-bold mb-6 transition-all duration-1000 ${
             isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'
           }`}>
-            Nuestros <span className="text-lime">Clientes</span>
+            Nuestros <span className="text-orange">Clientes</span>
           </h2>
           <p className={`text-xl text-muted-foreground max-w-2xl mx-auto transition-all duration-1000 delay-200 ${
             isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'
@@ -82,13 +82,13 @@ const Clients = () => {
               }`}
               style={{ animationDelay: `${600 + index * 200}ms` }}
             >
-              <div className="text-lime text-2xl mb-4">"</div>
+              <div className="text-orange text-2xl mb-4">"</div>
               <p className="text-muted-foreground mb-4 italic">
                 {testimonial.quote}
               </p>
               <div>
                 <p className="font-semibold text-foreground">{testimonial.author}</p>
-                <p className="text-sm text-lime">{testimonial.company}</p>
+                <p className="text-sm text-orange">{testimonial.company}</p>
               </div>
             </div>
           ))}

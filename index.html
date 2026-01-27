@@ -3,38 +3,117 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Punto Lima - Agencia de Marketing Digital | Impacto digital. Resultados medibles.</title>
-    <meta name="description" content="Agencia de marketing digital especializada en SEO, redes sociales, contenido y publicidad pagada. Transformamos tu presencia digital con resultados medibles." />
-    <meta name="author" content="Punto Lima" />
-    <meta name="keywords" content="marketing digital, SEO, social media, publicidad digital, agencia marketing, Córdoba Argentina" />
-    
+    <title>
+      Surf Marketing - Agencia de Marketing Digital | Impacto digital.
+      Resultados medibles.
+    </title>
+    <meta
+      name="description"
+      content="Agencia de marketing digital especializada en SEO, redes sociales, contenido y publicidad pagada. Transformamos tu presencia digital con resultados medibles."
+    />
+    <meta name="author" content="Surf Marketing" />
+    <meta
+      name="keywords"
+      content="marketing digital, SEO, social media, publicidad digital, agencia marketing, Córdoba Argentina"
+    />
+
     <!-- Canonical -->
-    <link rel="canonical" href="https://puntolima.com.ar/" />
-    
+    <link rel="canonical" href="https://surfmarketing.com.ar/" />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://puntolima.com.ar/" />
-    <meta property="og:title" content="Punto Lima - Agencia de Marketing Digital | Impacto digital. Resultados medibles." />
-    <meta property="og:description" content="Agencia de marketing digital especializada en SEO, redes sociales, contenido y publicidad pagada. Transformamos tu presencia digital con resultados medibles." />
-    <meta property="og:image" content="https://puntolima.com.ar/og-image.jpg" />
+    <meta property="og:url" content="https://surfmarketing.com.ar/" />
+    <meta
+      property="og:title"
+      content="Surf Marketing - Agencia de Marketing Digital | Impacto digital. Resultados medibles."
+    />
+    <meta
+      property="og:description"
+      content="Agencia de marketing digital especializada en SEO, redes sociales, contenido y publicidad pagada. Transformamos tu presencia digital con resultados medibles."
+    />
+    <meta
+      property="og:image"
+      content="https://surfmarketing.com.ar/og-image.jpg"
+    />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://puntolima.com.ar/" />
-    <meta property="twitter:title" content="Punto Lima - Agencia de Marketing Digital | Impacto digital. Resultados medibles." />
-    <meta property="twitter:description" content="Agencia de marketing digital especializada en SEO, redes sociales, contenido y publicidad pagada. Transformamos tu presencia digital con resultados medibles." />
-    <meta property="twitter:image" content="https://puntolima.com.ar/og-image.jpg" />
-    
+    <meta property="twitter:url" content="https://surfmarketing.com.ar/" />
+    <meta
+      property="twitter:title"
+      content="Surf Marketing - Agencia de Marketing Digital | Impacto digital. Resultados medibles."
+    />
+    <meta
+      property="twitter:description"
+      content="Agencia de marketing digital especializada en SEO, redes sociales, contenido y publicidad pagada. Transformamos tu presencia digital con resultados medibles."
+    />
+    <meta
+      property="twitter:image"
+      content="https://surfmarketing.com.ar/og-image.jpg"
+    />
+
     <!-- Theme Color -->
     <meta name="theme-color" content="#ffffff" />
+    <style>
+      body {
+        background-color: #000;
+        margin: 0;
+      }
+      #loading-splash {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+      }
+      .logo-container {
+        display: flex;
+        align-items: center;
+        position: relative;
+        font-size: 4em;
+        color: #fff;
+        font-weight: bold;
+        line-height: 1;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .logo-surfboard {
+        width: 40px;
+        height: 80px;
+        display: inline-block;
+        margin-right: 15px;
+        position: relative;
+        animation: surfRide 2s ease-in-out infinite;
+      }
+      .logo-text {
+        color: #fff;
+      }
+      @keyframes surfRide {
+        0%, 100% { transform: translateY(0) rotate(-5deg); }
+        50% { transform: translateY(-15px) rotate(5deg); }
+      }
+      .fade-out {
+        opacity: 0 !important;
+        pointer-events: none;
+      }
+    </style>
   </head>
 
   <body>
     <div id="loading-splash">
-        <div class="logo-container">
-            <span class="logo-dot"></span>
-            <span class="logo-text">lima</span>
-        </div>
+      <div class="logo-container">
+        <svg class="logo-surfboard" viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 5 C50 5 15 60 50 190 C85 60 50 5 50 5 Z" fill="hsl(30, 90%, 55%)" />
+          <path d="M50 100 L50 190" stroke="rgba(0,0,0,0.2)" stroke-width="2" />
+        </svg>
+        <span class="logo-text">surf</span>
+      </div>
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

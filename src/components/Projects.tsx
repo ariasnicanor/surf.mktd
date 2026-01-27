@@ -62,7 +62,7 @@ const Projects = () => {
           <h2 className={`text-4xl md:text-5xl font-bold mb-6 transition-all duration-1000 ${
             isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'
           }`}>
-            Nuestros <span className="text-lime">Proyectos</span>
+            Nuestros <span className="text-orange">Proyectos</span>
           </h2>
           {/* <p className={`text-xl text-muted-foreground max-w-2xl mx-auto transition-all duration-1000 delay-200 ${
             isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'
@@ -92,7 +92,7 @@ const Projects = () => {
                 
                 {/* Category Badge */}
                 <div className="absolute top-4 left-4">
-                  <span className="bg-lime text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-orange text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
                     {project.category}
                   </span>
                 </div>
@@ -100,7 +100,7 @@ const Projects = () => {
 
               {/* Project Content */}
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-3 text-foreground group-hover:text-lime transition-colors duration-300">
+                <h3 className="text-xl font-bold mb-3 text-foreground group-hover:text-orange transition-colors duration-300">
                   {project.title}
                 </h3>
                 <p className="text-muted-foreground mb-4 text-justify leading-relaxed">
@@ -109,14 +109,14 @@ const Projects = () => {
                 
                 {/* Results */}
                 <div className="bg-accent/50 rounded-lg p-3 mb-4">
-                  <p className="text-sm font-medium text-lime mb-1">Proyección:</p>
+                  <p className="text-sm font-medium text-orange mb-1">Proyección:</p>
                   <p className="text-sm text-foreground">{project.results}</p>
                 </div>
 
                 {/* CTA Button */}
                 {/* <Button
                   variant="outline"
-                  className="w-full border-lime text-lime hover:bg-lime hover:text-primary-foreground transition-all duration-300"
+                  className="w-full border-orange text-orange hover:bg-orange hover:text-primary-foreground transition-all duration-300"
                 >
                   Ver caso de estudio
                 </Button> */}
@@ -131,7 +131,7 @@ const Projects = () => {
         }`}>
           <Button
             size="lg"
-            className="bg-gradient-lime hover:bg-lime-dark text-primary-foreground font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-glow"
+            className="bg-gradient-orange hover:bg-orange-dark text-primary-foreground font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-glow"
           >
             Ver todos los proyectos
           </Button>
