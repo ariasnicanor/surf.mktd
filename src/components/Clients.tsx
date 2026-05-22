@@ -73,6 +73,15 @@ const Clients = () => {
         </div>
 
         {/* Testimonials */}
+        <div className="text-center mb-8">
+          <h3 className={`text-3xl font-bold mb-2 transition-all duration-1000 ${
+            isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'
+          }`}>Casos de éxito</h3>
+          <p className={`text-muted-foreground max-w-2xl mx-auto transition-all duration-1000 delay-200 ${
+            isVisible ? 'animate-fade-in' : 'opacity-0 translate-y-10'
+          }`}>Historias de clientes y resultados destacables</p>
+        </div>
+
         <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
             <div

@@ -9,7 +9,7 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: Mail, href: "mailto:contactopuntolima@gmail.com", label: "Gmail" },
+    { icon: Mail, href: "mailto:surf.mktd@gmail.com", label: "Gmail" },
     { icon: Instagram, href: "https://www.instagram.com/puntolima.ok?igsh=dTdkeDJzOXRpYTF1", label: "Instagram" },
     /* { icon: Linkedin, href: "#", label: "LinkedIn" } */
   ];
@@ -50,23 +50,15 @@ const Footer = () => {
               </p>
             </div>
             
-            <p className="text-muted-foreground text-justify leading-relaxed mb-6 max-w-md">
-              Somos una agencia de marketing digital enfocada en generar resultados reales y medibles. Potenciamos tu presencia online con estrategias creativas e innovadoras, combinando contenido de alto impacto, campañas publicitarias efectivas y diseño web profesional para impulsar el crecimiento de tu marca.
-            </p>
-
             {/* Contact Info */}
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-orange" />
-                <span className="text-muted-foreground">contactosurfmarketing@gmail.com</span>
+                <a href="mailto:surf.mktd@gmail.com" className="text-muted-foreground hover:underline">surf.mktd@gmail.com</a>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-orange" />
-                <span className="text-muted-foreground">+5492664258094</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-orange" />
-                <span className="text-muted-foreground">+5492664336855</span>
+                <a href="tel:01131631916" className="text-muted-foreground hover:underline">011 3163-1916</a>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-5 h-5 text-orange" />

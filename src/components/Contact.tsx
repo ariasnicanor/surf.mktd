@@ -138,7 +138,7 @@ const Contact = () => {
     {
       icon: Mail,
       label: "Email",
-      value: (<a href="mailto:contactopuntolima@gmail.com">contactopuntolima@gmail.com</a>)
+      value: (<a href="mailto:surf.mktd@gmail.com">surf.mktd@gmail.com</a>)
     },
     {
       icon: MapPin,
@@ -149,15 +149,7 @@ const Contact = () => {
       icon: Phone,
       label: "Teléfonos",
       value: (
-        <div className="flex gap-4">
-          <a href="tel:+5492664258094" className="text-muted-foreground hover:underline">
-            Nica: +5492664258094
-          </a>
-          <p className="text-muted-foreground hover:underline"> - </p>
-          <a href="tel:+5492664336855" className="text-muted-foreground hover:underline">
-            Anto: +5492664336855
-          </a>
-        </div>
+        <a href="tel:01131631916" className="text-muted-foreground hover:underline">011 3163-1916</a>
       )
     }
   ];

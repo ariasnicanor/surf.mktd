@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import logo from '@/assets/logo_surf.png';
+import logo from '@/assets/logo.svg';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -24,18 +24,17 @@ const Navbar = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
-        ? 'glass-card border-b border-glass-border' 
+        ? 'bg-background/15 backdrop-blur-xl' 
         : 'bg-transparent'
     }`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div 
-            className="text-2xl font-bold cursor-pointer"
+            className="flex items-center cursor-pointer"
             onClick={() => scrollToSection('hero')}
           >
-            <img src={logo} alt="Surf Marketing Logo" className="h-32 mt-2 w-auto" />
-            {/* <span>Surf Marketing</span> */}
+            <img src={logo} alt="Surf Marketing Logo" className="h-12 w-auto" />
           </div>
 
           {/* Navigation Links */}
@@ -47,23 +46,23 @@ const Navbar = () => {
               Inicio
             </button>
             <button 
+              onClick={() => scrollToSection('projects')}
+              className="text-foreground hover:text-orange transition-colors animated-underline"
+            >
+              Proyectos
+            </button>
+            <button 
               onClick={() => scrollToSection('clients')}
               className="text-foreground hover:text-orange transition-colors animated-underline"
             >
               Clientes
             </button>
             <button 
-              onClick={() => scrollToSection('projects')}
-              className="text-foreground hover:text-orange transition-colors animated-underline"
-            >
-              Proyectos
-            </button>
-            {/* NOT DISPLAYED <button 
               onClick={() => scrollToSection('contact')}
               className="text-foreground hover:text-orange transition-colors animated-underline"
             >
               Contacto
-            </button> */}
+            </button>
           </div>
 
           {/* CTA Button */}
