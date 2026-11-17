@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PerformanceRouteImport } from './routes/performance'
+import { Route as Propuesta_asistente_IMEMRouteImport } from './routes/propuesta_asistente_IMEM'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,41 @@ const PerformanceRoute = PerformanceRouteImport.update({
   path: '/performance',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Propuesta_asistente_IMEMRoute =
+  Propuesta_asistente_IMEMRouteImport.update({
+    id: '/propuesta_asistente_IMEM',
+    path: '/propuesta_asistente_IMEM',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/performance': typeof PerformanceRoute
+  '/propuesta_asistente_IMEM': typeof Propuesta_asistente_IMEMRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/performance': typeof PerformanceRoute
+  '/propuesta_asistente_IMEM': typeof Propuesta_asistente_IMEMRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/performance': typeof PerformanceRoute
+  '/propuesta_asistente_IMEM': typeof Propuesta_asistente_IMEMRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/performance'
+  fullPaths: '/' | '/performance' | '/propuesta_asistente_IMEM'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/performance'
-  id: '__root__' | '/' | '/performance'
+  to: '/' | '/performance' | '/propuesta_asistente_IMEM'
+  id: '__root__' | '/' | '/performance' | '/propuesta_asistente_IMEM'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PerformanceRoute: typeof PerformanceRoute
+  Propuesta_asistente_IMEMRoute: typeof Propuesta_asistente_IMEMRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +76,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PerformanceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/propuesta_asistente_IMEM': {
+      id: '/propuesta_asistente_IMEM'
+      path: '/propuesta_asistente_IMEM'
+      fullPath: '/propuesta_asistente_IMEM'
+      preLoaderRoute: typeof Propuesta_asistente_IMEMRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PerformanceRoute: PerformanceRoute,
+  Propuesta_asistente_IMEMRoute: Propuesta_asistente_IMEMRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

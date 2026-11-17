@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>Asistente IMEM</title>
+<meta name="description" content="Demo del asistente virtual de IMEM: oferta académica, modalidad, inscripción y contacto.">
+<link rel="icon" href="escudo-imem.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --primary: #0E3D82;
+    --primary-soft: rgba(14, 61, 130, .06);
+    --primary-line: rgba(14, 61, 130, .45);
+    --accent: #D95F20;
+    --fg: #16181d;
+    --muted: #6b7280;
+    --border: #e7e7e9;
+    --bg: #ffffff;
+    --tint: #f6f7fa;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: Outfit, ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, textarea { font: inherit; }
+  .app { display: flex; flex-direction: column; height: 100dvh; }
+  .wrap { width: 100%; max-width: 48rem; margin: 0 auto; padding: 0 16px; }
+
+  /* Header */
+  header { border-bottom: 1px solid var(--border); padding-top: env(safe-area-inset-top); }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 8px; }
+  .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .brand img { width: 38px; height: 38px; object-fit: contain; flex-shrink: 0; }
+  .brand h1 { margin: 0; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .brand p { margin: 0; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .badge { font-size: 10px; font-weight: 700; letter-spacing: .08em; color: var(--accent); border: 1px solid rgba(217,95,32,.4); border-radius: 999px; padding: 1px 7px; }
+  .new-btn {
+    display: none; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; flex-shrink: 0;
+    border: 0; border-radius: 999px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: opacity .15s, transform .1s;
+  }
+  .new-btn:hover { opacity: .9; } .new-btn:active { transform: scale(.96); }
+  .new-btn.show { display: flex; }
+
+  /* Conversation */
+  .scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+  .scroll .wrap { min-height: 100%; display: flex; flex-direction: column; gap: 24px; padding-block: 24px; }
+  .welcome { margin: auto 0; display: flex; flex-direction: column; gap: 20px; }
+  .welcome h2 { margin: 0; font-size: 26px; font-weight: 600; text-wrap: balance; }
+  .welcome h2 span { color: var(--primary); }
+  .welcome p { margin: 4px 0 0; color: var(--muted); text-wrap: pretty; line-height: 1.5; }
+  .chips { display: grid; gap: 8px; }
+  @media (min-width: 640px) { .chips { grid-template-columns: 1fr 1fr; } }
+  .chip {
+    display: flex; align-items: flex-start; gap: 12px; min-height: 44px; padding: 12px; text-align: left;
+    border: 1px solid var(--border); border-radius: 16px; background: #fff; cursor: pointer; color: inherit;
+    transition: border-color .15s, background-color .15s;
+  }
+  .chip:hover { border-color: var(--primary-line); background: var(--primary-soft); }
+  .chip svg { width: 20px; height: 20px; margin-top: 2px; flex-shrink: 0; color: var(--primary); }
+  .chip b { display: block; font-size: 14px; font-weight: 600; }
+  .chip span span { display: block; font-size: 14px; color: var(--muted); }
+  .chip.done { opacity: .55; }
+
+  .log { display: flex; flex-direction: column; gap: 24px; }
+  .msg-user { display: flex; justify-content: flex-end; }
+  .msg-user p {
+    margin: 0; max-width: 85%; white-space: pre-wrap; overflow-wrap: anywhere;
+    background: var(--primary); color: #fff; padding: 10px 16px; border-radius: 18px 18px 6px 18px; line-height: 1.45;
+  }
+  .msg-bot { display: flex; gap: 12px; min-width: 0; }
+  .avatar { display: none; width: 32px; height: 32px; flex-shrink: 0; margin-top: 2px; border: 1px solid var(--border); border-radius: 50%; padding: 3px; background: #fff; }
+  .avatar img { width: 100%; height: 100%; object-fit: contain; }
+  @media (min-width: 640px) { .avatar { display: block; } }
+  .bot-body { min-width: 0; flex: 1; line-height: 1.6; }
+  .bot-body p { margin: 0 0 10px; } .bot-body p:last-child { margin-bottom: 0; }
+  .bot-body ul { margin: 0 0 10px; padding-left: 20px; } .bot-body li { margin: 2px 0; }
+  .bot-body li::marker { color: var(--accent); }
+  .bot-body strong { font-weight: 600; }
+  .typing { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); padding: 4px 0; }
+  .dots { display: flex; gap: 4px; }
+  .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); animation: bounce 1s infinite; }
+  .dots i:nth-child(1) { animation-delay: -.3s; } .dots i:nth-child(2) { animation-delay: -.15s; }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+  .notice {
+    border: 1px solid rgba(217,95,32,.35); background: rgba(217,95,32,.06); border-radius: 16px; padding: 14px 16px;
+  }
+  .notice p:first-child strong:first-child { color: var(--accent); }
+  .restart {
+    margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px;
+    border: 0; border-radius: 999px; background: var(--primary); color: #fff; font-weight: 600; font-size: 14px; cursor: pointer;
+  }
+  .demo-note {
+    display: flex; align-items: center; gap: 6px; margin-top: 12px; padding-top: 10px;
+    border-top: 1px dashed var(--border); font-size: 12.5px; color: var(--muted); line-height: 1.4;
+  }
+  .demo-note svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--accent); }
+  .next { display: flex; flex-direction: column; gap: 8px; }
+  .next-title { margin: 0; font-size: 13px; font-weight: 500; color: var(--muted); }
+  form.locked { background: var(--tint); }
+  textarea:disabled { cursor: not-allowed; }
+  .error { margin: auto 0; text-align: center; color: var(--muted); line-height: 1.5; }
+
+  /* Composer */
+  footer { border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); }
+  footer .wrap { padding: 8px 12px 6px; }
+  form {
+    display: flex; align-items: flex-end; gap: 8px; padding: 6px;
+    border: 1px solid var(--border); border-radius: 24px; background: #fff;
+  }
+  form:focus-within { box-shadow: 0 0 0 3px rgba(14,61,130,.18); }
+  textarea {
+    flex: 1; min-height: 44px; max-height: 160px; resize: none; border: 0; outline: 0; background: transparent;
+    padding: 10px 12px; font-size: 16px; line-height: 24px; color: var(--fg);
+  }
+  textarea::placeholder { color: var(--muted); }
+  @media (min-width: 640px) { textarea { font-size: 15px; } }
+  .send {
+    width: 44px; height: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    border: 0; border-radius: 50%; background: var(--primary); color: #fff; cursor: pointer; transition: opacity .15s;
+  }
+  .send:disabled { opacity: .35; cursor: not-allowed; }
+  .send svg { width: 20px; height: 20px; }
+  .hint { margin: 6px 0 0; text-align: center; font-size: 12px; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { .dots i { animation: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <img src="escudo-imem.png" alt="Logo IMEM">
+        <div style="min-width:0">
+          <h1>Asistente IMEM <span class="badge">DEMO</span></h1>
+          <p>Oferta académica, inscripción y contacto</p>
+        </div>
+      </div>
+      <button type="button" class="new-btn" id="newBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Nueva consulta</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="scroll" id="scroll">
+    <div class="wrap" id="content">
+      <div class="typing" style="margin:auto" aria-live="polite"><span class="dots"><i></i><i></i><i></i></span>Cargando asistente...</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <form id="form" class="locked" aria-disabled="true">
+        <label for="input" style="position:absolute;left:-9999px">Escribe tu consulta</label>
+        <textarea id="input" rows="1" disabled placeholder="Escribir consultas libres está disponible en la versión con IA"></textarea>
+        <button class="send" id="send" type="submit" aria-label="Enviar consulta" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        </button>
+      </form>
+      <p class="hint">Versión demo · elige una de las 4 consultas predefinidas.</p>
+    </div>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const MAX_QUESTIONS = 4;
+  const ICONS = [
+    '<path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+    '<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
+    '<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M12 11h4M12 16h4M8 11h.01M8 16h.01"/>',
+    '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>'
+  ];
+
+  const $ = (id) => document.getElementById(id);
+  const content = $('content'), scroll = $('scroll'), input = $('input'), send = $('send'), newBtn = $('newBtn');
+
+  let kb = null;          // { questions: [{label, question, keys, answer}], fallback, notice }
+  let count = 0;          // consultas respondidas
+  let busy = false;
+  let finished = false;
+  let asked = new Set();
+
+  // ---------- Lectura del txt ----------
+  const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[¿?¡!.,;:()]/g, ' ');
+
+  function parseKB(txt) {
+    const blocks = txt.split(/^###\s+/m).slice(1);
+    const out = { questions: [], note: '', notice: '' };
+    for (const block of blocks) {
+      const [head, ...rest] = block.split('\n');
+      const body = rest.join('\n');
+      const field = (name) => (body.match(new RegExp('^' + name + ':\\s*(.*)$', 'mi')) || [, ''])[1].trim();
+      const answer = (body.split(/^respuesta:\s*$/mi)[1] || '').trim();
+      const type = head.trim().toUpperCase();
+      if (type === 'PREGUNTA') {
+        out.questions.push({
+          label: field('etiqueta'),
+          question: field('pregunta'),
+          answer
+        });
+      } else if (type === 'NOTA_RESPUESTA') out.note = answer;
+      else if (type === 'AVISO_DEMO') out.notice = answer;
+    }
+    return out;
+  }
+
+  // ---------- Markdown mínimo ----------
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const inline = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  function md(text) {
+    let html = '', list = false;
+    for (const raw of text.split('\n')) {
+      const line = raw.trim();
+      if (/^- /.test(line)) {
+        if (!list) { html += '<ul>'; list = true; }
+        html += '<li>' + inline(line.slice(2)) + '</li>';
+        continue;
+      }
+      if (list) { html += '</ul>'; list = false; }
+      if (line) html += '<p>' + inline(line) + '</p>';
+    }
+    return html + (list ? '</ul>' : '');
+  }
+
+  // ---------- Render ----------
+  const toBottom = () => { scroll.scrollTop = scroll.scrollHeight; };
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  function renderWelcome() {
+    content.innerHTML = `
+      <div class="welcome">
+        <div>
+          <h2>¡Hola! ¿En qué puedo <span>ayudarte</span>?</h2>
+          <p>Soy el asistente virtual de IMEM. Te oriento sobre licenciaturas, maestrías y doctorado en línea, inscripción y contacto.</p>
+        </div>
+        <div class="chips" id="chips"></div>
+      </div>`;
+    renderChips($('chips'));
+  }
+
+  function renderChips(el) {
+    el.innerHTML = '';
+    kb.questions.forEach((q, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      if (asked.has(i)) return;
+      b.className = 'chip';
+      b.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[i % ICONS.length]}</svg>
+        <span><b>${esc(q.label)}</b><span>${esc(q.question)}</span></span>`;
+      b.addEventListener('click', () => ask(i));
+      el.appendChild(b);
+    });
+  }
+
+  function ensureLog() {
+    let log = $('log');
+    if (!log) {
+      content.innerHTML = '<div class="log" role="log" aria-label="Conversación" id="log"></div>';
+      log = $('log');
+      newBtn.classList.add('show');
+    }
+    return log;
+  }
+
+  function addUser(text) {
+    const d = document.createElement('div');
+    d.className = 'msg-user';
+    d.innerHTML = '<p></p>';
+    d.firstChild.textContent = text;
+    ensureLog().appendChild(d);
+  }
+
+  function addBot(extraClass = '') {
+    const d = document.createElement('div');
+    d.className = 'msg-bot';
+    d.innerHTML = `<div class="avatar" aria-hidden="true"><img src="escudo-imem.png" alt=""></div>
+      <div class="bot-body ${extraClass}"><div class="typing" role="status"><span class="dots"><i></i><i></i><i></i></span>Buscando en la información de IMEM...</div></div>`;
+    ensureLog().appendChild(d);
+    return d.querySelector('.bot-body');
+  }
+
+  async function stream(el, text) {
+    const words = text.split(/(\s+)/);
+    let acc = '';
+    for (let i = 0; i < words.length; i++) {
+      acc += words[i];
+      if (i % 6 === 0 || i === words.length - 1) { el.innerHTML = md(acc); toBottom(); await wait(28); }
+    }
+  }
+
+  const NOTE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
+
+  async function ask(i) {
+    if (busy || finished || !kb || asked.has(i)) return;
+    busy = true;
+    const prev = $('next'); if (prev) prev.remove();
+    const q = kb.questions[i];
+    addUser(q.question); toBottom();
+
+    const body = addBot(); toBottom();
+    await wait(900 + Math.random() * 500);
+    asked.add(i); count++;
+    await stream(body, q.answer);
+    if (kb.note) {
+      const n = document.createElement('p');
+      n.className = 'demo-note';
+      n.innerHTML = NOTE_ICON + '<span></span>';
+      n.lastChild.textContent = kb.note;
+      body.appendChild(n); toBottom();
+    }
+
+    if (count >= Math.min(MAX_QUESTIONS, kb.questions.length)) {
+      finished = true;
+      await wait(700);
+      const n = addBot('notice'); toBottom();
+      await wait(800);
+      await stream(n, kb.notice);
+      const r = document.createElement('button');
+      r.type = 'button'; r.className = 'restart'; r.textContent = 'Reiniciar demo';
+      r.addEventListener('click', reset);
+      n.appendChild(r);
+    } else {
+      const next = document.createElement('div');
+      next.className = 'next'; next.id = 'next';
+      next.innerHTML = '<p class="next-title">Otras consultas que puedes hacer:</p><div class="chips"></div>';
+      ensureLog().appendChild(next);
+      renderChips(next.querySelector('.chips'));
+    }
+    toBottom();
+    busy = false;
+  }
+
+  function reset() {
+    count = 0; finished = false; busy = false; asked = new Set();
+    newBtn.classList.remove('show');
+    renderWelcome(); scroll.scrollTop = 0;
+  }
+
+  // ---------- Composer (deshabilitado en el demo) ----------
+  $('form').addEventListener('submit', (e) => e.preventDefault());
+  newBtn.addEventListener('click', reset);
+
+  // ---------- Inicio ----------
+  fetch('conocimiento.txt', { cache: 'no-store' })
+    .then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then((txt) => { kb = parseKB(txt); renderWelcome(); })
+    .catch(() => {
+      content.innerHTML = '<p class="error">No se pudo leer <strong>conocimiento.txt</strong>.<br>Abre el demo con <strong>abrir-demo.bat</strong> (o publícalo en un hosting) en lugar de hacer doble clic en el HTML.</p>';
+    });
+})();
+</script>
+</body>
+</html>

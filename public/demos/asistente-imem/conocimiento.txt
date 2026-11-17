@@ -1,0 +1,88 @@
+=====================================================================
+ ASISTENTE IMEM — BASE DE CONOCIMIENTO DEL DEMO
+ Fuente: https://imem.edu.mx (relevado el 16/11/2026)
+---------------------------------------------------------------------
+ Cómo se edita:
+ - Cada bloque empieza con "### PREGUNTA" y tiene:
+     etiqueta:  título corto de la tarjeta
+     pregunta:  texto que aparece en la tarjeta y se envía al tocarla
+     respuesta: todo lo que sigue hasta el próximo "###"
+ - En las respuestas se puede usar **negrita** y listas con "- ".
+ - El bloque "### NOTA_RESPUESTA" se agrega al final de cada respuesta.
+ - El bloque "### AVISO_DEMO" aparece después de la 4.ª consulta.
+=====================================================================
+
+### PREGUNTA
+etiqueta: Oferta académica
+pregunta: ¿Qué licenciaturas, maestrías y doctorados ofrecen?
+respuesta:
+En IMEM tenemos **licenciaturas, maestrías y doctorado 100% en línea**:
+
+**Licenciaturas**
+- Administración de Empresas
+- Enseñanza de la Lengua Inglesa
+- Derecho y Gobernanza Pública
+
+**Maestrías**
+- Ciencia de Datos e Inteligencia Artificial
+- Dirección y Gestión Estratégica de la Seguridad Pública y Privada
+- Enseñanza de la Lengua Inglesa
+- Educación y Docencia
+- Ingeniería Industrial
+- Liderazgo y Gestión del Talento Humano
+- Dirección Comercial y Retail
+
+**Doctorado**
+- Doctorado en Educación
+
+También hay **educación continua** (masterclass, talleres y diplomados) y **programas para empresas**.
+
+### PREGUNTA
+etiqueta: Modalidad y validez
+pregunta: ¿Las clases son en línea? ¿Tienen validez oficial?
+respuesta:
+Sí. Todos los programas son **100% en línea**, pensados para que puedas estudiar **sin renunciar a tu trabajo**.
+
+Cuentan con **Reconocimiento de Validez Oficial de Estudios (RVOE) Federal**, avalado por la **SEP** y la **DGAIR**.
+
+Además tienes:
+- **Acompañamiento real**, académico y humano, desde el ingreso hasta tu meta.
+- **Networking nacional** con empresarios, docentes y especialistas.
+- Investigación a través del **CIPSO** y una revista científica indexada.
+
+### PREGUNTA
+etiqueta: Inscripción
+pregunta: ¿Cómo me inscribo o pido informes?
+respuesta:
+Para empezar, lo más rápido es **pedir informes** sobre el programa que te interesa:
+
+- **WhatsApp:** 222 451 2110
+- **Teléfono:** 222 366 4702
+- **Correo:** informes@imempuebla.com
+
+Un asesor te comparte requisitos de ingreso, costos, fechas de inicio y opciones de pago para tu programa.
+
+Si ya tienes experiencia laboral y quieres **terminar tu licenciatura** o **estudiar un posgrado**, cuéntalo en tu mensaje y te orientan sobre la ruta que más te conviene.
+
+### PREGUNTA
+etiqueta: Contacto y ubicación
+pregunta: ¿Dónde están y cómo los contacto?
+respuesta:
+**Campus Puebla:** Avenida 29 Sur, número 307, Colonia La Paz, Puebla, C.P. 72160.
+
+**Contacto**
+- **WhatsApp:** 222 451 2110
+- **Teléfono:** 222 366 4702
+- **Correo:** informes@imempuebla.com
+
+También puedes seguirnos en TikTok y LinkedIn.
+
+### NOTA_RESPUESTA
+respuesta:
+Respuesta de demostración: la información se tomó de la página web oficial imem.edu.mx.
+
+### AVISO_DEMO
+respuesta:
+**Esto es una demostración.** Respondí a partir de 4 preguntas predefinidas, con información tomada de la página web de IMEM.
+
+El asistente real funciona con **inteligencia artificial**: puedes escribir tu consulta como quieras, responde de forma más concisa y precisa, y tiene acceso a mucha más información de IMEM (planes de estudio, requisitos, fechas, becas, trámites y más).
