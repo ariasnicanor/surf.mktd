@@ -312,6 +312,21 @@ dialog::backdrop{background:rgba(5,5,6,.78);backdrop-filter:blur(4px)}
 .dlg.single h2{font-family:var(--display);font-weight:850;font-stretch:110%;font-size:30px;margin:6px 0 0}
 @media (max-width:880px){.dlg.single{width:100%}}
 [hidden]{display:none!important}
+html:has(dialog[open]){overflow:hidden}
+
+/* inventario del panel: misma tarjeta que el catálogo */
+.adm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.acard{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s}
+.acard:hover{border-color:#47424d}
+.amedia{position:relative;aspect-ratio:4/3;background:#000;overflow:hidden;cursor:pointer;border:0;padding:0;display:block;width:100%}
+.amedia img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 48%;transition:transform .5s}
+.acard:hover .amedia img{transform:scale(1.03)}
+.acard.off .amedia img{opacity:.35}
+.acard.sold .amedia img{filter:grayscale(.55) brightness(.7)}
+.badge.off{background:rgba(12,11,13,.85);color:var(--muted)}
+.acard .cbody{gap:6px}
+.acts{display:flex;gap:8px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
+.acts .btn{flex:1}
 
 /* ---------- user button + admin ---------- */
 .user-btn{flex-shrink:0;width:44px;height:44px;padding:0;border:0;background:transparent;color:#fff;display:grid;place-items:center;border-radius:50%;position:relative;opacity:.9;transition:opacity .2s,transform .15s}
@@ -1017,12 +1032,19 @@ function admInv(){
   const n=DB.cars.length, hid=DB.cars.filter(c=>c.hidden).length, sold=DB.cars.filter(c=>c.sold).length;
   return `<div class="adm-head"><div><h2 class="adm-h">Inventario</h2><p class="adm-sub">${n} vehículos · ${hid} ocultos · ${sold} vendidos</p></div><button class="btn btn-gold" type="button" data-a="new">+ Agregar vehículo</button></div>
   <input class="fsearch" id="adm-q" type="search" placeholder="Buscar por marca, modelo o año" value="${ea(admQ)}" autocomplete="off">
-  <div class="adm-list">${DB.cars.map(c=>`<div class="adm-row${c.hidden?" off":""}" data-id="${c.id}" data-k="${ea(norm(c.name))}">
-    <img src="${IMG(c.img[0])}" alt="">
-    <div class="adm-info"><b>${c.b} ${c.m}</b><span class="num">${c.y} · ${km(c)||"—"} · ${fmt(c.p)}</span>
-      <div class="adm-tags">${c.id===DB.featured?'<i class="t gold">Destacado</i>':""}${c.sold?'<i class="t red">Vendido</i>':""}${c.hidden?'<i class="t">Oculto</i>':'<i class="t ok">Publicado</i>'}</div></div>
-    <div class="adm-btns"><button class="btn sm" type="button" data-a="edit">Editar</button><button class="btn sm" type="button" data-a="vis">${c.hidden?"Mostrar":"Ocultar"}</button></div>
-  </div>`).join("")}</div>`;
+  <div class="adm-grid">${DB.cars.map(c=>{
+    const spec=[km(c), FUEL[c.f]||c.tr, c.hp?c.hp+" hp":null].filter(Boolean);
+    const tags=(c.id===DB.featured?'<span class="badge new">Destacado</span>':"")+(c.sold?'<span class="badge sold">Vendido</span>':"")+(c.hidden?'<span class="badge off">Oculto</span>':"");
+    return `<article class="acard${c.hidden?" off":""}${c.sold?" sold":""}" data-id="${c.id}" data-k="${ea(norm(c.name))}">
+    <button class="amedia" type="button" data-a="edit" aria-label="Editar ${ea(c.b)} ${ea(c.m)}"><img src="${IMG(c.img[0])}" alt="" loading="lazy"><div class="badges">${tags}</div></button>
+    <div class="cbody">
+      <div class="cbrand"><span>${c.b}</span><span>${c.y}</span></div>
+      <h3 class="cname">${c.m}</h3>
+      <div class="specs num">${spec.map(s=>`<span>${s}</span>`).join("<span aria-hidden='true'>·</span>")}</div>
+      <div class="price num">${fmt(c.p)}</div>
+      <div class="acts"><button class="btn sm btn-gold" type="button" data-a="edit">Editar</button><button class="btn sm" type="button" data-a="vis">${c.hidden?"Mostrar":"Ocultar"}</button></div>
+    </div>
+  </article>`}).join("")}</div>`;
 }
 function admForm(){
   const c=admEdit, isNew=!DB.cars.some(x=>x.id===c.id);
@@ -1131,7 +1153,7 @@ async function commit(msg,op){
 function wireAdmin(){
   adm.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{admTab=b.dataset.tab;admEdit=null;renderAdmin()});
   adm.querySelectorAll("[data-a]").forEach(b=>b.onclick=async()=>{
-    const a=b.dataset.a, row=b.closest(".adm-row"), id=row?+row.dataset.id:null, car=id!=null?DB.cars.find(c=>c.id===id):null;
+    const a=b.dataset.a, row=b.closest(".acard"), id=row?+row.dataset.id:null, car=id!=null?DB.cars.find(c=>c.id===id):null;
     if(a==="close") adm.close();
     if(a==="logout"){ if(LIVE){ try{await sb.auth.signOut()}catch{} ADMIN_OK=false } try{sessionStorage.removeItem(SESSION_KEY)}catch{} markAdmin(); adm.close(); toast("Sesión cerrada") }
     if(a==="new"){ admEdit={id:Date.now(),b:"",m:"",y:new Date().getFullYear(),p:null,km:null,body:"SUV",f:null,img:[],eq:[]}; renderAdmin() }
@@ -1142,7 +1164,7 @@ function wireAdmin(){
     if(a==="reset"){ if(!armed(b,"Confirmar: restablecer")) return; try{localStorage.removeItem(DB_KEY)}catch{} DB=loadDB(); refreshAll(); toast("Datos originales restablecidos"); renderAdmin() }
   });
   const q=$("#adm-q");
-  if(q){ const f=()=>{admQ=q.value;const t=norm(q.value.trim());adm.querySelectorAll(".adm-row").forEach(r=>r.hidden=!!t&&!r.dataset.k.includes(t))}; q.oninput=f; f() }
+  if(q){ const f=()=>{admQ=q.value;const t=norm(q.value.trim());adm.querySelectorAll(".acard").forEach(r=>r.hidden=!!t&&!r.dataset.k.includes(t))}; q.oninput=f; f() }
 
   const form=$("#adm-form");
   if(form){
