@@ -318,6 +318,8 @@ dialog::backdrop{background:rgba(5,5,6,.78);backdrop-filter:blur(4px)}
 .user-btn:hover{opacity:1}
 .user-btn:active{transform:scale(.92)}
 .user-btn.on::after{content:"";position:absolute;right:5px;bottom:6px;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid var(--ink)}
+.top #wa-top{order:1}
+.top .user-btn{order:2;margin-right:-6px}
 @media (max-width:720px){.user-btn{margin-left:auto}}
 .badge.sold{background:var(--red);color:#fff}
 .card.sold .slides img{filter:grayscale(.55) brightness(.7)}
@@ -569,9 +571,16 @@ dialog::backdrop{background:rgba(5,5,6,.78);backdrop-filter:blur(4px)}
   <symbol id="ico-wa" viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.8zm0-21.6A11.8 11.8 0 0 0 1.9 18l-1.7 6 6.2-1.6A11.8 11.8 0 1 0 12 .2z"/></symbol>
 </svg>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
+/* Conexión a Supabase. Vacío = modo demo (datos y login solo en este navegador). */
+const SB_URL = "";
+const SB_KEY = "";
+const sb = (SB_URL && SB_KEY && window.supabase) ? window.supabase.createClient(SB_URL, SB_KEY) : null;
+const LIVE = !!sb;
+
 let WA = "573184018726";
-const IMG = k => String(k).startsWith("data:") ? k : `assets/${k}.webp`;
+const IMG = k => /^(data:|https?:)/.test(String(k)) ? k : `assets/${k}.webp`;
 const DEFAULT_CARS = [
  {id:2141,b:"Cadillac",m:"Escalade Luxury Platinum",y:2026,p:949000000,km:0,f:"gasoline",hp:420,dt:"4x4",c:"Negro",body:"SUV",img:["4ITXfpGXrZUhUFEP","SA2WZbE1rOGURnNr","GTg0Fl72RRyFetCx","XOqripeZnTjPHUus"],eq:["Motor 6.2 V8 de 420 hp","Pantalla curva de 55 pulgadas 8K","Sonido AKG de 19 parlantes","7 puestos en cuero y Alcantara","Sillas con enfriamiento y calefacción","Suspensión magnética adaptativa","Estribos eléctricos","Head-Up Display","Sistema de autoparqueo","Rines de 22 pulgadas"]},
  {id:2144,b:"Can-Am",m:"Maverick R X rs Smart-Shox",y:2025,p:399000000,km:null,f:null,tr:"DCT 7 vel.",hp:240,dt:"4x4",body:"UTV",img:["QKQsQkmtSb-exW_d","2bMqik099kwY4oH0","hucO0Rf7KHkwXu9c","MJDCOGJ0MH-vvBMV"],eq:["Smart-Shox con amortiguadores FOX Podium","Dirección DPS Gen 2","Tracción 2WD / 4WD con Smart-Lok","Doble embrague de 7 velocidades","Rines Beadlock de 16 pulgadas","Tanque de 50 litros"]},
@@ -632,7 +641,7 @@ function loadDB(){
   }
   return d;
 }
-let DB = loadDB();
+let DB = LIVE ? {cars:[], ...clone(DEFAULTS)} : loadDB();
 function saveDB(){
   const out = {cars:DB.cars.map(({i,name,...c})=>c), featured:DB.featured, fin:DB.fin, cfg:DB.cfg};
   try{ localStorage.setItem(DB_KEY, JSON.stringify(out)); return true }
@@ -904,9 +913,42 @@ function openCompare(){
 }
 
 /* ---------- administrador (demo: acceso y datos solo en este navegador) ---------- */
-const ADMIN = {user:"admin", pass:"Imperio2026"};
+const ADMIN = {user:"admin", pass:"Imperio2026"};   // solo modo demo
 const SESSION_KEY = "ai-admin-session";
-const isAdmin = () => { try{ return sessionStorage.getItem(SESSION_KEY)==="1" }catch{ return false } };
+let ADMIN_OK = false;                                 // modo real: lo confirma la tabla admins
+const isAdmin = () => { if(LIVE) return ADMIN_OK; try{ return sessionStorage.getItem(SESSION_KEY)==="1" }catch{ return false } };
+
+/* --- Supabase: lectura y escritura --- */
+const fromRow=r=>({id:+r.id,b:r.brand,m:r.model,y:r.year,p:+r.price,km:r.km,f:r.fuel,tr:r.transmission||undefined,hp:r.hp||undefined,dt:r.drivetrain||undefined,c:r.color||undefined,body:r.body,eq:r.equipment||[],img:r.images||[],armored:!!r.armored,sold:!!r.sold,hidden:!!r.hidden,sort:r.sort??0});
+const toRow=c=>({id:c.id,brand:c.b,model:c.m,year:c.y,price:c.p,km:c.km??null,fuel:c.f||null,transmission:c.tr||null,hp:c.hp||null,drivetrain:c.dt||null,color:c.c||null,body:c.body||"SUV",equipment:c.eq||[],images:c.img||[],armored:!!c.armored,sold:!!c.sold,hidden:!!c.hidden,sort:c.sort??0});
+async function loadRemote(){
+  const [v,s]=await Promise.all([sb.from("vehicles").select("*").order("sort").order("id"), sb.from("settings").select("*").eq("id",1).maybeSingle()]);
+  if(v.error) throw v.error; if(s.error) throw s.error;
+  DB.cars=v.data.map(fromRow);
+  if(s.data){ DB.featured=s.data.featured_id; DB.fin={...DEFAULTS.fin,...(s.data.fin||{})}; DB.cfg={...DEFAULTS.cfg,...(s.data.cfg||{})}; }
+}
+async function sbCheckAdmin(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){ ADMIN_OK=false; return false }
+  const {data}=await sb.from("admins").select("user_id").eq("user_id",session.user.id).maybeSingle();
+  ADMIN_OK=!!data; return ADMIN_OK;
+}
+const must=(res,what)=>{ if(res.error) throw res.error; if(Array.isArray(res.data)&&!res.data.length) throw new Error(`sin permiso para ${what}`); return res };
+async function uploadPhotos(c){
+  const out=[];
+  for(const [j,k] of c.img.entries()){
+    if(!String(k).startsWith("data:")){ out.push(k); continue }
+    const blob=await (await fetch(k)).blob(), path=`${c.id}/${Date.now()}-${j}.jpg`;
+    const {error}=await sb.storage.from("vehicles").upload(path,blob,{contentType:"image/jpeg"});
+    if(error) throw error;
+    out.push(sb.storage.from("vehicles").getPublicUrl(path).data.publicUrl);
+  }
+  return out;
+}
+const sbSaveCar=async c=>must(await sb.from("vehicles").upsert(toRow(c)).select("id"),"guardar el vehículo");
+const sbPatchCar=async(id,patch)=>must(await sb.from("vehicles").update(patch).eq("id",id).select("id"),"editar el vehículo");
+const sbDeleteCar=async id=>must(await sb.from("vehicles").delete().eq("id",id).select("id"),"eliminar el vehículo");
+const sbSaveSettings=async()=>must(await sb.from("settings").update({featured_id:DB.featured??null,fin:DB.fin,cfg:DB.cfg}).eq("id",1).select("id"),"guardar la configuración");
 function markAdmin(){ $("#admin-btn").classList.toggle("on",isAdmin()); $("#admin-btn").setAttribute("aria-label",isAdmin()?"Abrir panel de administración":"Ingresar como administrador") }
 const adm = $("#adm");
 let admTab="inv", admEdit=null, admQ="";
@@ -918,19 +960,31 @@ function openLogin(){
     <button class="dclose" type="button" aria-label="Cerrar">${ICON.x}</button>
     <header><div class="eyebrow">Acceso administrador</div><h2>Ingresar</h2></header>
     <form id="login" class="login" novalidate>
-      <label class="adm-f" for="lg-u">Usuario<input id="lg-u" autocomplete="username" autocapitalize="none" required></label>
+      <label class="adm-f" for="lg-u">${LIVE?"Correo":"Usuario"}<input id="lg-u" ${LIVE?'type="email"':""} autocomplete="username" autocapitalize="none" required></label>
       <label class="adm-f" for="lg-p">Contraseña<input id="lg-p" type="password" autocomplete="current-password" required></label>
-      <p class="lg-err" id="lg-err" hidden>Usuario o contraseña incorrectos.</p>
-      <button class="btn btn-gold" type="submit">Entrar</button>
-      <small>Solo el administrador puede editar el catálogo. Versión demo: los cambios se guardan en este navegador.</small>
+      <p class="lg-err" id="lg-err" hidden></p>
+      <button class="btn btn-gold" type="submit" id="lg-go">Entrar</button>
+      <small>Solo el administrador puede editar el catálogo.${LIVE?"":" Versión demo: los cambios se guardan en este navegador."}</small>
     </form></div>`);
   setTimeout(()=>$("#lg-u").focus(),50);
-  $("#login").onsubmit=e=>{
+  const fail=t=>{const el=$("#lg-err");el.textContent=t;el.hidden=false;$("#lg-p").select()};
+  const ok=()=>{markAdmin(); dlg.close(); toast("Sesión iniciada"); openAdmin()};
+  $("#login").onsubmit=async e=>{
     e.preventDefault();
-    if($("#lg-u").value.trim().toLowerCase()===ADMIN.user && $("#lg-p").value===ADMIN.pass){
-      try{sessionStorage.setItem(SESSION_KEY,"1")}catch{}
-      markAdmin(); dlg.close(); toast("Sesión iniciada"); openAdmin();
-    } else { $("#lg-err").hidden=false; $("#lg-p").select() }
+    const u=$("#lg-u").value.trim(), p=$("#lg-p").value;
+    if(!LIVE){
+      if(u.toLowerCase()===ADMIN.user && p===ADMIN.pass){ try{sessionStorage.setItem(SESSION_KEY,"1")}catch{} ok() }
+      else fail("Usuario o contraseña incorrectos.");
+      return;
+    }
+    const go=$("#lg-go"); go.disabled=true; go.textContent="Entrando…";
+    try{
+      const {error}=await sb.auth.signInWithPassword({email:u,password:p});
+      if(error) fail("Correo o contraseña incorrectos.");
+      else if(!(await sbCheckAdmin())){ await sb.auth.signOut(); fail("Esta cuenta no tiene permiso de administrador.") }
+      else ok();
+    }catch{ fail("No se pudo conectar. Revisa tu internet e intenta de nuevo.") }
+    if(go.isConnected){ go.disabled=false; go.textContent="Entrar" }
   };
 }
 function openAdmin(){
@@ -948,7 +1002,7 @@ function renderAdmin(){
   adm.innerHTML=`<div class="adm ui">
     <header class="adm-top">
       <div class="adm-tt"><span class="eyebrow">Panel de administración</span><b>Auto Imperio</b></div>
-      <span class="pill-demo">Demo</span>
+      ${LIVE?"":'<span class="pill-demo">Demo</span>'}
       <div class="adm-act"><button class="btn sm" type="button" data-a="close">Ver catálogo</button><button class="btn sm" type="button" data-a="logout">Salir</button></div>
     </header>
     <nav class="adm-tabs" role="tablist">${TABS.map(([k,l])=>`<button type="button" role="tab" data-tab="${k}" aria-selected="${k===admTab}">${l}</button>`).join("")}</nav>
@@ -1059,23 +1113,32 @@ function admCfg(){
     </div></fieldset>
     <div class="adm-save"><button class="btn btn-gold" type="submit">Guardar configuración</button></div>
   </form>
-  <div class="adm-card"><b>Restablecer la demo</b><p class="adm-sub">Vuelve al inventario y la configuración originales. Se pierden los cambios hechos en este navegador.</p><button class="btn danger sm" type="button" data-a="reset">Restablecer datos</button></div>`;
+  ${LIVE?"":'<div class="adm-card"><b>Restablecer la demo</b><p class="adm-sub">Vuelve al inventario y la configuración originales. Se pierden los cambios hechos en este navegador.</p><button class="btn danger sm" type="button" data-a="reset">Restablecer datos</button></div>'}`;
 }
 
 /* --- eventos --- */
 function armed(btn,label){ if(btn.dataset.armed){return true} btn.dataset.armed="1"; btn.classList.add("armed"); const t=btn.textContent; btn.textContent=label; setTimeout(()=>{if(btn.isConnected){delete btn.dataset.armed;btn.classList.remove("armed");btn.textContent=t}},4000); return false }
-function commit(msg){ const ok=saveDB(); refreshAll(); if(ok) toast(msg); return ok }
+async function commit(msg,op){
+  if(!LIVE){ const ok=saveDB(); refreshAll(); if(ok) toast(msg); return ok }
+  refreshAll(); toast("Guardando…");
+  try{ await op?.() }
+  catch(e){
+    console.error(e); toast("No se pudo guardar: "+(e.message||"revisa la conexión"));
+    try{ await loadRemote() }catch{} refreshAll(); if(adm.open) renderAdmin(); return false;
+  }
+  refreshAll(); if(adm.open) renderAdmin(); toast(msg); return true;
+}
 function wireAdmin(){
   adm.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{admTab=b.dataset.tab;admEdit=null;renderAdmin()});
   adm.querySelectorAll("[data-a]").forEach(b=>b.onclick=async()=>{
     const a=b.dataset.a, row=b.closest(".adm-row"), id=row?+row.dataset.id:null, car=id!=null?DB.cars.find(c=>c.id===id):null;
     if(a==="close") adm.close();
-    if(a==="logout"){ try{sessionStorage.removeItem(SESSION_KEY)}catch{} markAdmin(); adm.close(); toast("Sesión cerrada") }
+    if(a==="logout"){ if(LIVE){ try{await sb.auth.signOut()}catch{} ADMIN_OK=false } try{sessionStorage.removeItem(SESSION_KEY)}catch{} markAdmin(); adm.close(); toast("Sesión cerrada") }
     if(a==="new"){ admEdit={id:Date.now(),b:"",m:"",y:new Date().getFullYear(),p:null,km:null,body:"SUV",f:null,img:[],eq:[]}; renderAdmin() }
     if(a==="edit"){ admEdit=clone(car); renderAdmin() }
-    if(a==="vis"){ car.hidden=!car.hidden; commit(car.hidden?"Vehículo oculto del catálogo":"Vehículo publicado"); renderAdmin() }
+    if(a==="vis"){ car.hidden=!car.hidden; const hid=car.hidden; renderAdmin(); commit(hid?"Vehículo oculto del catálogo":"Vehículo publicado",()=>sbPatchCar(car.id,{hidden:hid})) }
     if(a==="back"){ admEdit=null; renderAdmin() }
-    if(a==="del"){ if(!armed(b,"Confirmar: eliminar")) return; DB.cars=DB.cars.filter(c=>c.id!==admEdit.id); if(DB.featured===admEdit.id) DB.featured=DB.cars[0]?.id; admEdit=null; commit("Vehículo eliminado"); renderAdmin() }
+    if(a==="del"){ if(!armed(b,"Confirmar: eliminar")) return; const id=admEdit.id, wasFeat=DB.featured===id; DB.cars=DB.cars.filter(c=>c.id!==id); if(wasFeat) DB.featured=DB.cars[0]?.id; admEdit=null; renderAdmin(); commit("Vehículo eliminado",async()=>{await sbDeleteCar(id); if(wasFeat) await sbSaveSettings()}) }
     if(a==="reset"){ if(!armed(b,"Confirmar: restablecer")) return; try{localStorage.removeItem(DB_KEY)}catch{} DB=loadDB(); refreshAll(); toast("Datos originales restablecidos"); renderAdmin() }
   });
   const q=$("#adm-q");
@@ -1102,12 +1165,13 @@ function wireAdmin(){
       if(!admEdit.p){ toast("Escribe el precio"); return }
       const k=DB.cars.findIndex(c=>c.id===admEdit.id), isNew=k<0;
       const {i,name,...data}=admEdit;
-      if(isNew) DB.cars.unshift(data); else DB.cars[k]=data;
-      admEdit=null; commit(isNew?"Vehículo publicado":"Cambios guardados"); renderAdmin();
+      if(isNew){ data.sort=Math.min(0,...DB.cars.map(c=>c.sort??0))-1; DB.cars.unshift(data) } else DB.cars[k]=data;
+      admEdit=null; renderAdmin();
+      commit(isNew?"Vehículo publicado":"Cambios guardados",async()=>{ data.img=await uploadPhotos(data); await sbSaveCar(data) });
     };
   }
-  adm.querySelectorAll("[data-feat]").forEach(b=>b.onclick=()=>{DB.featured=+b.dataset.feat; commit("Destacado actualizado"); renderAdmin()});
-  const ff=$("#feat-form"); if(ff) ff.onsubmit=e=>{e.preventDefault(); DB.cfg.featLabel=clean(ff.elements.featLabel.value); commit("Etiqueta guardada")};
+  adm.querySelectorAll("[data-feat]").forEach(b=>b.onclick=()=>{DB.featured=+b.dataset.feat; renderAdmin(); commit("Destacado actualizado",sbSaveSettings)});
+  const ff=$("#feat-form"); if(ff) ff.onsubmit=e=>{e.preventDefault(); DB.cfg.featLabel=clean(ff.elements.featLabel.value); commit("Etiqueta guardada",sbSaveSettings)};
 
   const fin=$("#fin-form");
   if(fin){
@@ -1119,7 +1183,7 @@ function wireAdmin(){
       if(!f.terms.length){ toast("Elige al menos un plazo"); return }
       if(!f.terms.includes(f.term)) f.term=f.terms[f.terms.length-1];
       if(f.dp<f.dpMin) f.dp=f.dpMin;
-      DB.fin=f; commit("Financiación guardada"); renderAdmin();
+      DB.fin=f; renderAdmin(); commit("Financiación guardada",sbSaveSettings);
     };
   }
   const cf=$("#cfg-form");
@@ -1127,7 +1191,7 @@ function wireAdmin(){
     e.preventDefault(); const v=n=>clean(cf.elements[n].value);
     if(v("wa").replace(/\D/g,"").length<10){ toast("Revisa el número de WhatsApp"); return }
     Object.assign(DB.cfg,{wa:v("wa").replace(/\D/g,""),city:v("city")||DEFAULTS.cfg.city,ig:v("ig"),tt:v("tt"),heroA:v("heroA"),heroB:v("heroB"),lead:v("lead")});
-    commit("Configuración guardada");
+    commit("Configuración guardada",sbSaveSettings);
   };
 }
 
@@ -1168,10 +1232,22 @@ $("#trade").addEventListener("submit",e=>{
   window.open(wa(t),"_blank","noopener");
 });
 
-applyCfg(); renderFeature(); render(); renderTray(); markAdmin();
 $("#admin-btn").onclick=openAdmin;
-const h=location.hash.match(/^#v(\d+)$/); if(h) openCar(+h[1]);
-if(location.hash==="#admin") openAdmin();
+function openFromHash(){ const h=location.hash.match(/^#v(\d+)$/); if(h) openCar(+h[1]); if(location.hash==="#admin") openAdmin() }
+applyCfg(); renderFeature(); render(); renderTray(); markAdmin();
+if(!LIVE) openFromHash();
+else {
+  $("#grid").innerHTML='<div class="empty"><b>Cargando inventario…</b>Un momento.</div>';
+  ["#st-total","#st-brands","#st-new"].forEach(s=>$(s).textContent="–");
+  (async()=>{
+    try{ await loadRemote() }
+    catch(e){ console.error(e); DB={cars:clone(DEFAULT_CARS),...clone(DEFAULTS)}; toast("No se pudo cargar el inventario actualizado") }
+    refreshAll();
+    try{ await sbCheckAdmin() }catch{} markAdmin();
+    openFromHash();
+  })();
+  sb.auth.onAuthStateChange(ev=>{ if(ev==="SIGNED_OUT"){ ADMIN_OK=false; markAdmin(); if(adm.open) adm.close() } });
+}
 </script>
 </body>
 </html>
