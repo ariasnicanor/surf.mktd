@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PerformanceRouteImport } from './routes/performance'
 import { Route as Propuesta_asistente_IMEMRouteImport } from './routes/propuesta_asistente_IMEM'
+import { Route as Propuesta_autoimperioRouteImport } from './routes/propuesta_autoimperio'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,35 +30,57 @@ const Propuesta_asistente_IMEMRoute =
     path: '/propuesta_asistente_IMEM',
     getParentRoute: () => rootRouteImport,
   } as any)
+const Propuesta_autoimperioRoute = Propuesta_autoimperioRouteImport.update({
+  id: '/propuesta_autoimperio',
+  path: '/propuesta_autoimperio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/performance': typeof PerformanceRoute
   '/propuesta_asistente_IMEM': typeof Propuesta_asistente_IMEMRoute
+  '/propuesta_autoimperio': typeof Propuesta_autoimperioRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/performance': typeof PerformanceRoute
   '/propuesta_asistente_IMEM': typeof Propuesta_asistente_IMEMRoute
+  '/propuesta_autoimperio': typeof Propuesta_autoimperioRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/performance': typeof PerformanceRoute
   '/propuesta_asistente_IMEM': typeof Propuesta_asistente_IMEMRoute
+  '/propuesta_autoimperio': typeof Propuesta_autoimperioRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/performance' | '/propuesta_asistente_IMEM'
+  fullPaths:
+    | '/'
+    | '/performance'
+    | '/propuesta_asistente_IMEM'
+    | '/propuesta_autoimperio'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/performance' | '/propuesta_asistente_IMEM'
-  id: '__root__' | '/' | '/performance' | '/propuesta_asistente_IMEM'
+  to:
+    | '/'
+    | '/performance'
+    | '/propuesta_asistente_IMEM'
+    | '/propuesta_autoimperio'
+  id:
+    | '__root__'
+    | '/'
+    | '/performance'
+    | '/propuesta_asistente_IMEM'
+    | '/propuesta_autoimperio'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PerformanceRoute: typeof PerformanceRoute
   Propuesta_asistente_IMEMRoute: typeof Propuesta_asistente_IMEMRoute
+  Propuesta_autoimperioRoute: typeof Propuesta_autoimperioRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -83,6 +106,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Propuesta_asistente_IMEMRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/propuesta_autoimperio': {
+      id: '/propuesta_autoimperio'
+      path: '/propuesta_autoimperio'
+      fullPath: '/propuesta_autoimperio'
+      preLoaderRoute: typeof Propuesta_autoimperioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -90,6 +120,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PerformanceRoute: PerformanceRoute,
   Propuesta_asistente_IMEMRoute: Propuesta_asistente_IMEMRoute,
+  Propuesta_autoimperioRoute: Propuesta_autoimperioRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
