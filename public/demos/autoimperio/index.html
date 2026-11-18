@@ -311,6 +311,106 @@ dialog::backdrop{background:rgba(5,5,6,.78);backdrop-filter:blur(4px)}
 .dlg.single header{padding:clamp(20px,3vw,28px);padding-right:70px}
 .dlg.single h2{font-family:var(--display);font-weight:850;font-stretch:110%;font-size:30px;margin:6px 0 0}
 @media (max-width:880px){.dlg.single{width:100%}}
+[hidden]{display:none!important}
+
+/* ---------- user button + admin ---------- */
+.user-btn{flex-shrink:0;width:44px;height:44px;padding:0;border:0;background:transparent;color:#fff;display:grid;place-items:center;border-radius:50%;position:relative;opacity:.9;transition:opacity .2s,transform .15s}
+.user-btn:hover{opacity:1}
+.user-btn:active{transform:scale(.92)}
+.user-btn.on::after{content:"";position:absolute;right:5px;bottom:6px;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid var(--ink)}
+@media (max-width:720px){.user-btn{margin-left:auto}}
+.badge.sold{background:var(--red);color:#fff}
+.card.sold .slides img{filter:grayscale(.55) brightness(.7)}
+.dlg.single.narrow{width:min(440px,calc(100% - 32px))}
+.login{display:flex;flex-direction:column;gap:14px;padding:0 clamp(20px,3vw,28px) 26px}
+.login small{color:var(--muted);font-size:12.5px;line-height:1.45}
+.lg-err{margin:0;color:#ff8a8f;font-size:14px;font-weight:600}
+.ui input:not([type=checkbox]):not([type=range]):not([type=file]),.ui select,.ui textarea{height:46px;border-radius:12px;border:1px solid var(--line);background:var(--panel-2);padding:0 13px;color:var(--fg);font-weight:500;width:100%;outline:none;min-width:0}
+.ui textarea{height:auto;padding:11px 13px;resize:vertical;line-height:1.45;font:inherit;font-weight:500}
+.ui input:focus,.ui select:focus,.ui textarea:focus{border-color:var(--gold)}
+.adm-f,.fgrid label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--muted);min-width:0}
+.adm{position:fixed;inset:0;background:var(--ink);display:flex;flex-direction:column}
+.adm-top{display:flex;align-items:center;gap:12px;padding:calc(12px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));background:var(--panel);border-bottom:1px solid var(--line)}
+.adm-tt{display:flex;flex-direction:column;gap:2px;line-height:1.1;min-width:0}
+.adm-tt .eyebrow{font-size:11px}
+.adm-tt b{font-family:var(--display);font-weight:850;font-stretch:110%;font-size:19px}
+.pill-demo{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:6px;border:1px solid rgba(216,170,76,.45);color:var(--gold)}
+.adm-act{margin-left:auto;display:flex;gap:8px}
+.adm-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding:0 max(10px,env(safe-area-inset-right,0px)) 0 max(10px,env(safe-area-inset-left,0px));background:var(--panel);border-bottom:1px solid var(--line)}
+.adm-tabs::-webkit-scrollbar{display:none}
+.adm-tabs button{flex-shrink:0;background:none;border:0;border-bottom:2px solid transparent;padding:14px 14px 12px;font-weight:600;color:var(--muted)}
+.adm-tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--gold)}
+.adm-body{flex:1;overflow:auto;padding:24px max(16px,env(safe-area-inset-right,0px)) calc(48px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.adm-in{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.adm-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.adm-h{font-family:var(--display);font-weight:850;font-stretch:108%;font-size:clamp(24px,3vw,32px);line-height:1.05;margin:0;letter-spacing:-.015em}
+.adm-sub{color:var(--muted);margin:4px 0 0;font-size:14px}
+.adm-list{display:flex;flex-direction:column;gap:8px}
+.adm-row{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.adm-row img{width:96px;height:72px;object-fit:cover;border-radius:10px}
+.adm-row.off img{opacity:.45}
+.adm-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.adm-info b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.adm-info span{color:var(--muted);font-size:13.5px}
+.adm-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.t{font-style:normal;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:var(--panel-2);border:1px solid var(--line);color:var(--muted)}
+.t.gold{color:var(--gold);border-color:rgba(216,170,76,.45)}
+.t.red{color:#ff8a8f;border-color:rgba(226,38,46,.45)}
+.t.ok{color:#8ff0b4;border-color:rgba(37,211,102,.35)}
+.adm-btns{display:flex;gap:6px}
+.btn.sm{height:40px;padding:0 14px;font-size:14px}
+.btn.danger{color:#ff8a8f;border-color:rgba(226,38,46,.45)}
+.btn.danger.armed{background:var(--red);border-color:var(--red);color:#fff}
+.clear.back{align-self:flex-start;padding-left:0}
+.adm-form{display:flex;flex-direction:column;gap:16px}
+.adm-form fieldset,.adm-card{margin:0;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--panel);min-width:0}
+.adm-card{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.adm-form legend{padding:0 6px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.fgrid.one{grid-template-columns:minmax(0,1fr)}
+.ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:6px}
+.ph{position:relative;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:#000;border:1px solid var(--line)}
+.ph img{width:100%;height:100%;object-fit:cover}
+.ph>span{position:absolute;left:6px;bottom:6px;font-size:11px;font-weight:700;background:var(--gold);color:#1d1406;padding:1px 7px;border-radius:5px}
+.ph>span:empty{display:none}
+.ph-act{position:absolute;top:6px;right:6px;display:flex;gap:4px}
+.ph-act button{width:30px;height:30px;border-radius:50%;border:0;background:rgba(12,11,13,.82);color:#fff;font-size:13px}
+.ph.add{display:grid;place-items:center;border:1px dashed #4a4550;background:var(--panel-2);color:var(--muted);font-weight:600;font-size:14px;cursor:pointer;text-align:center}
+.ph.add:hover{border-color:var(--gold);color:var(--fg)}
+.ph.add>span{position:static;background:none;color:inherit;padding:0 8px;font-size:14px;font-weight:600;border-radius:0}
+.adm-save .btn{flex:0 1 auto}
+@media (max-width:560px){.adm-save{flex-wrap:nowrap}.adm-save .btn{flex:1 1 0;padding:0 12px}}
+.sw-list{display:flex;flex-direction:column;gap:12px}
+.sw{display:flex;align-items:center;gap:12px;cursor:pointer;font-weight:500;position:relative}
+.sw input{position:absolute;opacity:0;width:1px;height:1px}
+.sw i{width:42px;height:24px;border-radius:99px;background:var(--line);position:relative;flex-shrink:0;transition:background .2s}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--fg);transition:transform .2s}
+.sw input:checked+i{background:var(--gold)}
+.sw input:checked+i::after{transform:translateX(18px)}
+.sw input:focus-visible+i{outline:2px solid var(--gold);outline-offset:2px}
+.chk-row{display:flex;flex-wrap:wrap;gap:8px}
+.chk{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 13px;border:1px solid var(--line);border-radius:999px;background:var(--panel-2);font-size:14px;cursor:pointer}
+.chk input{accent-color:var(--gold)}
+.adm-save{display:flex;gap:8px;flex-wrap:wrap;position:sticky;bottom:-48px;padding-block:12px;background:var(--ink);border-top:1px solid var(--line);z-index:2}
+.adm-save.inline{position:static;background:none;border:0;padding:12px 0 0}
+.fin-ex{font-family:var(--display);font-weight:800;font-size:26px}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.feat-opt{padding:0;text-align:left;border:2px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);transition:border-color .2s}
+.feat-opt:hover{border-color:#4a4550}
+.feat-opt[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+.feat-opt img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.feat-opt div{display:flex;flex-direction:column;gap:2px;padding:9px 11px;font-size:13.5px;line-height:1.3}
+.feat-opt span{color:var(--muted)}
+@media (max-width:560px){
+  .adm-row{grid-template-columns:72px minmax(0,1fr)}
+  .adm-row img{width:72px;height:54px}
+  .adm-btns{grid-column:1/-1}
+  .adm-btns .btn{flex:1}
+  .adm-head .btn{width:100%}
+  .pill-demo{display:none}
+  .adm-act .btn{padding:0 12px}
+  .feat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 .toast{position:fixed;left:50%;top:calc(80px + env(safe-area-inset-top,0px));transform:translate(-50%,-20px);background:var(--fg);color:var(--ink);padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;z-index:200;opacity:0;pointer-events:none;transition:all .25s}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
@@ -328,6 +428,9 @@ dialog::backdrop{background:rgba(5,5,6,.78);backdrop-filter:blur(4px)}
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q-top" type="search" placeholder="Busca marca, modelo o año" autocomplete="off">
     </label>
+    <button class="user-btn" id="admin-btn" type="button" aria-label="Ingresar como administrador" title="Administrador">
+      <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><defs><clipPath id="uclip"><circle cx="12" cy="12" r="9.3"/></clipPath></defs><circle cx="12" cy="12" r="10.9" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="9.3" r="3.9" fill="currentColor"/><path clip-path="url(#uclip)" d="M3.4 22c.6-4.6 4.1-7.3 8.6-7.3s8 2.7 8.6 7.3V24H3.4z" fill="currentColor"/></svg>
+    </button>
     <a class="btn btn-wa" id="wa-top" target="_blank" rel="noopener">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.8zm0-21.6A11.8 11.8 0 0 0 1.9 18l-1.7 6 6.2-1.6A11.8 11.8 0 1 0 12 .2z"/></svg>
       <span>Escríbenos</span>
@@ -339,9 +442,9 @@ dialog::backdrop{background:rgba(5,5,6,.78);backdrop-filter:blur(4px)}
   <section class="hero">
     <div class="wrap">
       <div>
-        <div class="eyebrow">Bucaramanga · Alta gama</div>
-        <h1>Compramos y vendemos <em>vehículos de alta gama.</em></h1>
-        <p class="lead">Explora el inventario completo, compara modelos y escríbenos por WhatsApp. Recibimos tu carro de menor o mayor valor como parte de pago.</p>
+        <div class="eyebrow" id="hero-eyebrow">Bucaramanga · Alta gama</div>
+        <h1 id="hero-title">Compramos y vendemos <em>vehículos de alta gama.</em></h1>
+        <p class="lead" id="hero-lead">Explora el inventario completo, compara modelos y escríbenos por WhatsApp. Recibimos tu carro de menor o mayor valor como parte de pago.</p>
         <label class="m-search">
           <span class="sr">Buscar vehículo</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -440,10 +543,10 @@ dialog::backdrop{background:rgba(5,5,6,.78);backdrop-filter:blur(4px)}
 
 <footer>
   <div class="wrap">
-    <div><b style="color:var(--fg)">Auto Imperio</b> · Bucaramanga, Colombia · <span class="num">+57 318 401 8726</span></div>
+    <div><b style="color:var(--fg)">Auto Imperio</b> · <span id="foot-city">Bucaramanga, Colombia</span> · <span class="num" id="foot-wa">+57 318 401 8726</span></div>
     <div class="soc">
-      <a class="btn" href="https://www.instagram.com/autoimperio.col" target="_blank" rel="noopener">Instagram</a>
-      <a class="btn" href="https://www.tiktok.com/@autoimperio.col" target="_blank" rel="noopener">TikTok</a>
+      <a class="btn" id="lnk-ig" href="https://www.instagram.com/autoimperio.col" target="_blank" rel="noopener">Instagram</a>
+      <a class="btn" id="lnk-tt" href="https://www.tiktok.com/@autoimperio.col" target="_blank" rel="noopener">TikTok</a>
     </div>
   </div>
 </footer>
@@ -460,15 +563,16 @@ dialog::backdrop{background:rgba(5,5,6,.78);backdrop-filter:blur(4px)}
 <div class="scrim" id="scrim"></div>
 <div class="toast" id="toast"></div>
 <dialog id="dlg" aria-label="Detalle del vehículo"></dialog>
+<dialog id="adm" aria-label="Panel de administración"></dialog>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="ico-wa" viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.8zm0-21.6A11.8 11.8 0 0 0 1.9 18l-1.7 6 6.2-1.6A11.8 11.8 0 1 0 12 .2z"/></symbol>
 </svg>
 
 <script>
-const WA = "573184018726";
-const IMG = k => `assets/${k}.webp`;
-const CARS = [
+let WA = "573184018726";
+const IMG = k => String(k).startsWith("data:") ? k : `assets/${k}.webp`;
+const DEFAULT_CARS = [
  {id:2141,b:"Cadillac",m:"Escalade Luxury Platinum",y:2026,p:949000000,km:0,f:"gasoline",hp:420,dt:"4x4",c:"Negro",body:"SUV",img:["4ITXfpGXrZUhUFEP","SA2WZbE1rOGURnNr","GTg0Fl72RRyFetCx","XOqripeZnTjPHUus"],eq:["Motor 6.2 V8 de 420 hp","Pantalla curva de 55 pulgadas 8K","Sonido AKG de 19 parlantes","7 puestos en cuero y Alcantara","Sillas con enfriamiento y calefacción","Suspensión magnética adaptativa","Estribos eléctricos","Head-Up Display","Sistema de autoparqueo","Rines de 22 pulgadas"]},
  {id:2144,b:"Can-Am",m:"Maverick R X rs Smart-Shox",y:2025,p:399000000,km:null,f:null,tr:"DCT 7 vel.",hp:240,dt:"4x4",body:"UTV",img:["QKQsQkmtSb-exW_d","2bMqik099kwY4oH0","hucO0Rf7KHkwXu9c","MJDCOGJ0MH-vvBMV"],eq:["Smart-Shox con amortiguadores FOX Podium","Dirección DPS Gen 2","Tracción 2WD / 4WD con Smart-Lok","Doble embrague de 7 velocidades","Rines Beadlock de 16 pulgadas","Tanque de 50 litros"]},
  {id:2143,b:"Land Rover",m:"Defender 110 X Dynamic S PHEV",y:2024,p:548000000,km:17000,f:"plug_in_hybrid",hp:404,c:"Gris",body:"SUV",img:["FbcKZ-XLmy6p4g46","sSomub7MZIaIhpy8","30eVIw7B5wOKS4H2","Uf_X_teP8RlAsRmK"],eq:["Rines de 22 pulgadas","Suspensión electroneumática","Modos de terreno y conducción","Radar antichoque","Cámaras 4K de 360 grados","Control de estabilidad"]},
@@ -489,7 +593,7 @@ const CARS = [
  {id:2131,b:"Mercedes-Benz",m:"CLA 200",y:2024,p:154900000,km:6700,f:"gasoline",hp:163,c:"Blanco",body:"Sedán",img:["bT-0L3LPiBVRy2fp","X8Nxr4UySf3fMmYS","hS_VYi3dfpMYDnp1","qEcGvRMKAipGKq3t"],eq:["Acabados AMG-Line","Techo panorámico de cristal","Faros LED High-Performance","Sensores delanteros y traseros","Cámara de reversa HD"]},
  {id:2140,b:"Mercedes-Benz",m:"A35 AMG 4MATIC",y:2025,p:185000000,km:18500,f:"hybrid",hp:306,dt:"AWD",c:"Gris",body:"Deportivo",img:["PW0UtLda4o_-Ovld","o9tFIeZ84Dz9Jhg2","4UqoxlbD52n709V_","jMb_M8uOZN13Axpk"],eq:["Motor de 306 CV","0 a 100 km/h en 4,9 s","Tracción 4MATIC","Asistente de frenado","Silla del piloto con 3 memorias"]}
 ];
-CARS.forEach((c,i)=>{c.i=i;c.name=`${c.b} ${c.m} ${c.y}`});
+let CARS=[], BRANDS=[];
 
 const FUEL = {gasoline:"Gasolina",diesel:"Diésel",hybrid:"Híbrido",plug_in_hybrid:"Híbrido enchufable",electric:"Eléctrico"};
 const FUELF = {Gasolina:["gasoline"],"Diésel":["diesel"],"Híbrido":["hybrid","plug_in_hybrid"],"Eléctrico":["electric"]};
@@ -501,6 +605,45 @@ const km = c => c.km==null ? null : c.km===0 ? "0 km" : c.km.toLocaleString("es-
 const wa = txt => `https://wa.me/${WA}?text=${encodeURIComponent(txt)}`;
 const waCar = c => wa(`Hola Auto Imperio, me interesa el ${c.name} publicado en ${fmt(c.p)}. ¿Sigue disponible?`);
 const store = {get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const ea = s => String(s??"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const clean = s => String(s??"").replace(/[<>]/g,"").trim();
+
+/* ---------- datos editables (modo demo: se guardan en este navegador) ---------- */
+const DB_KEY = "ai-admin-v1";
+const ALLTERMS = [12,24,36,48,60,72,84];
+const BODIES = ["SUV","Pick-up","Deportivo","Sedán","Hatchback","UTV","Otro"];
+const DEFAULTS = {
+  featured: 2141,
+  fin: {on:true, rate:1.5, dp:30, dpMin:10, term:60, terms:[12,24,36,48,60,72],
+        note:"Cálculo de referencia con la tasa que escribas. No es una oferta de crédito; las condiciones reales las confirma el asesor o la entidad financiera."},
+  cfg: {wa:"573184018726", city:"Bucaramanga", heroA:"Compramos y vendemos", heroB:"vehículos de alta gama.",
+        lead:"Explora el inventario completo, compara modelos y escríbenos por WhatsApp. Recibimos tu carro de menor o mayor valor como parte de pago.",
+        ig:"https://www.instagram.com/autoimperio.col", tt:"https://www.tiktok.com/@autoimperio.col", featLabel:"Destacado"}
+};
+const clone = o => JSON.parse(JSON.stringify(o));
+function loadDB(){
+  const d = {cars:clone(DEFAULT_CARS), ...clone(DEFAULTS)};
+  const s = store.get(DB_KEY, null);
+  if(s && typeof s==="object"){
+    if(Array.isArray(s.cars)) d.cars = s.cars;
+    if(s.featured!=null) d.featured = s.featured;
+    d.fin = {...d.fin, ...(s.fin||{})};
+    d.cfg = {...d.cfg, ...(s.cfg||{})};
+  }
+  return d;
+}
+let DB = loadDB();
+function saveDB(){
+  const out = {cars:DB.cars.map(({i,name,...c})=>c), featured:DB.featured, fin:DB.fin, cfg:DB.cfg};
+  try{ localStorage.setItem(DB_KEY, JSON.stringify(out)); return true }
+  catch(e){ toast("No hay espacio para guardar: usa menos fotos o más livianas"); return false }
+}
+function prep(){
+  DB.cars.forEach((c,i)=>{c.i=i; c.name=`${c.b} ${c.m} ${c.y}`});
+  CARS = DB.cars.filter(c=>!c.hidden);
+  BRANDS = [...new Set(CARS.map(c=>c.b))];
+}
+prep();
 
 const S = {q:"",brands:new Set(),cond:"all",price:null,body:new Set(),fuel:new Set(),fav:false,sort:"feat"};
 let favs = new Set(store.get("ai-favs",[]));
@@ -522,6 +665,7 @@ function badges(c){
   if(c.f==="electric") h+='<span class="badge ev">Eléctrico</span>';
   else if(c.f==="hybrid"||c.f==="plug_in_hybrid") h+='<span class="badge ev">Híbrido</span>';
   if(c.armored) h+='<span class="badge arm">Blindado</span>';
+  if(c.sold) h='<span class="badge sold">Vendido</span>'+h;
   return h;
 }
 function slides(c,cls=""){
@@ -537,17 +681,21 @@ function wireSlides(root){
 
 /* ---------- feature + stats + rails ---------- */
 function renderFeature(){
-  const c=CARS[0];
-  $("#feature").innerHTML=`<img src="${IMG(c.img[0])}" alt="${c.name}"><span class="badge new tag">Destacado · 0 km</span>
+  const c=CARS.find(x=>x.id===DB.featured)||CARS[0];
+  $("#feature").hidden=!c;
+  if(c){
+  const tag=[DB.cfg.featLabel, c.km===0?"0 km":null].filter(Boolean).join(" · ");
+  const meta=[c.hp&&c.hp+" hp", c.dt, c.c].filter(Boolean).join(" · ");
+  $("#feature").innerHTML=`<img src="${IMG(c.img[0])}" alt="${c.name}">${tag?`<span class="badge new tag">${tag}</span>`:""}
   <div class="shade"><div class="eyebrow">${c.b} · ${c.y}</div><h2>${c.m}</h2>
-  <div class="row"><div><div class="price num">${fmt(c.p)}</div><div class="meta">${c.hp} hp · ${c.dt} · ${c.c}</div></div><span class="btn btn-gold" style="height:42px">Ver detalles</span></div></div>`;
-  const open=()=>openCar(c.id);
+  <div class="row"><div><div class="price num">${fmt(c.p)}</div><div class="meta">${meta}</div></div><span class="btn btn-gold" style="height:42px">Ver detalles</span></div></div>`;
+  }
+  const open=()=>c&&openCar(c.id);
   $("#feature").onclick=open; $("#feature").onkeydown=e=>{if(e.key==="Enter")open()};
   $("#st-total").textContent=CARS.length;
   $("#st-brands").textContent=new Set(CARS.map(c=>c.b)).size;
   $("#st-new").textContent=CARS.filter(c=>c.km===0).length;
 }
-const BRANDS=[...new Set(CARS.map(c=>c.b))];
 function chipGroup(el,items,isOn,onClick){
   el.innerHTML=items.map((it,j)=>`<button type="button" class="chip" data-j="${j}" aria-pressed="${isOn(it)}">${it.label}</button>`).join("");
   el.querySelectorAll("button").forEach(b=>b.onclick=()=>{onClick(items[b.dataset.j]);render()});
@@ -601,7 +749,7 @@ function renderActive(){
 
 function card(c,j){
   const spec=[c.y, km(c), FUEL[c.f]||c.tr, c.hp?c.hp+" hp":null].filter(Boolean);
-  return `<article class="card" data-id="${c.id}" style="animation-delay:${Math.min(j,8)*40}ms" tabindex="0" aria-label="${c.name}, ${fmt(c.p)}">
+  return `<article class="card${c.sold?" sold":""}" data-id="${c.id}" style="animation-delay:${Math.min(j,8)*40}ms" tabindex="0" aria-label="${c.name}, ${fmt(c.p)}">
     <div class="media">${slides(c)}
       <button class="nav prev" type="button" aria-label="Foto anterior">${ICON.l}</button><button class="nav next" type="button" aria-label="Foto siguiente">${ICON.r}</button>
       <div class="badges">${badges(c)}</div>
@@ -642,7 +790,8 @@ function render(){
 function clearAll(){S.q="";S.brands.clear();S.cond="all";S.price=null;S.body.clear();S.fuel.clear();S.fav=false;$("#q").value="";$("#q-top").value="";$("#q-m").value="";render()}
 
 /* ---------- favs + compare ---------- */
-function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove("on"),1800)}
+const TOAST=document.getElementById("toast");
+function toast(t){const el=TOAST;const host=adm.open?adm:dlg.open?dlg:document.body;if(el.parentNode!==host)host.appendChild(el);el.textContent=t;el.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove("on"),1800)}
 function toggleFav(id){favs.has(id)?favs.delete(id):(favs.add(id),toast("Guardado en favoritos"));store.set("ai-favs",[...favs]);$("#favn").textContent=favs.size?`(${favs.size})`:"";if(S.fav)render()}
 function toggleCmp(id){
   if(cmp.includes(id)) cmp=cmp.filter(x=>x!==id);
@@ -670,7 +819,8 @@ function showDlg(html){dlg.innerHTML=html;dlg.querySelector(".dclose").onclick=c
 function openCar(id){
   const c=CARS.find(x=>x.id===id); if(!c) return;
   history.replaceState(null,"",`#v${c.id}`);
-  const rows=[["Año",c.y],["Kilometraje",km(c)],["Transmisión",c.tr||"Automática"],["Motor",FUEL[c.f]],["Potencia",c.hp&&c.hp+" hp"],["Tracción",c.dt],["Color",c.c],["Tipo",c.body],["Ubicación","Bucaramanga"]].filter(r=>r[1]!=null&&r[1]!=="");
+  const rows=[["Año",c.y],["Kilometraje",km(c)],["Transmisión",c.tr||"Automática"],["Motor",FUEL[c.f]],["Potencia",c.hp&&c.hp+" hp"],["Tracción",c.dt],["Color",c.c],["Tipo",c.body],["Ubicación",DB.cfg.city]].filter(r=>r[1]!=null&&r[1]!=="");
+  const F={...DB.fin, terms:[...DB.fin.terms].sort((a,b)=>a-b)};
   const similar=CARS.filter(x=>x.id!==c.id&&(x.body===c.body)).sort((a,b)=>Math.abs(a.p-c.p)-Math.abs(b.p-c.p)).slice(0,3);
   showDlg(`<div class="dlg">
     <button class="dclose" type="button" aria-label="Cerrar">${ICON.x}</button>
@@ -697,17 +847,17 @@ function openCar(id){
       </div>
       <dl class="sgrid num" style="margin:0">${rows.map(r=>`<div><dt>${r[0]}</dt><dd>${r[1]}</dd></div>`).join("")}</dl>
       ${c.eq.length?`<div class="dsec"><h3>Equipamiento destacado</h3><ul class="eq">${c.eq.map(e=>`<li>${e}</li>`).join("")}</ul></div>`:""}
-      <div class="dsec"><h3>Simula tu cuota</h3>
+      ${F.on&&!c.sold?`<div class="dsec"><h3>Simula tu cuota</h3>
         <div class="fin">
           <div class="fin-row">
-            <label>Cuota inicial <span class="num" id="fi-dp-l">30%</span><input type="range" id="fi-dp" min="10" max="80" step="5" value="30"></label>
-            <label>Plazo<select id="fi-n">${[12,24,36,48,60,72].map(n=>`<option value="${n}" ${n===60?"selected":""}>${n} meses</option>`).join("")}</select></label>
-            <label>Tasa mes vencido %<input type="number" id="fi-r" step="0.05" min="0" value="1.5"></label>
+            <label>Cuota inicial <span class="num" id="fi-dp-l"></span><input type="range" id="fi-dp" min="${F.dpMin}" max="90" step="5" value="${Math.max(F.dp,F.dpMin)}"></label>
+            <label>Plazo<select id="fi-n">${F.terms.map(n=>`<option value="${n}" ${n===F.term?"selected":""}>${n} meses</option>`).join("")}</select></label>
+            <label>Tasa mes vencido %<input type="number" id="fi-r" step="0.05" min="0" value="${F.rate}"></label>
           </div>
           <div class="fin-out"><div><small>Cuota mensual estimada</small><br><b class="num" id="fi-out"></b></div><div style="text-align:right"><small>Inicial <span class="num" id="fi-dp-v"></span><br>Financias <span class="num" id="fi-l"></span></small></div></div>
-          <small>Cálculo de referencia con la tasa que escribas. No es una oferta de crédito; las condiciones reales las confirma el asesor o la entidad financiera.</small>
+          <small>${ea(F.note)}</small>
         </div>
-      </div>
+      </div>`:""}
       ${similar.length?`<div class="dsec"><h3>También te puede interesar</h3><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">${similar.map(s=>`<button type="button" data-sim="${s.id}" style="background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:0;overflow:hidden;text-align:left"><img src="${IMG(s.img[0])}" alt="" style="aspect-ratio:4/3;object-fit:cover;width:100%"><div style="padding:8px 10px;font-size:13px;line-height:1.3"><b style="display:block">${s.b} ${s.m}</b><span class="num" style="color:var(--muted)">${short(s.p)}</span></div></button>`).join("")}</div></div>`:""}
     </div>
   </div>`);
@@ -726,7 +876,7 @@ function openCar(id){
     const q=r?L*r/(1-Math.pow(1+r,-n)):L/n;
     $("#fi-dp-l").textContent=Math.round(dp*100)+"%"; $("#fi-dp-v").textContent=short(c.p*dp); $("#fi-l").textContent=short(L); $("#fi-out").textContent=fmt(q);
   };
-  ["fi-dp","fi-n","fi-r"].forEach(id=>$("#"+id).addEventListener("input",calc)); calc();
+  if($("#fi-dp")){["fi-dp","fi-n","fi-r"].forEach(id=>$("#"+id).addEventListener("input",calc)); calc();}
 }
 
 function openCompare(){
@@ -753,6 +903,234 @@ function openCompare(){
   </div>`);
 }
 
+/* ---------- administrador (demo: acceso y datos solo en este navegador) ---------- */
+const ADMIN = {user:"admin", pass:"Imperio2026"};
+const SESSION_KEY = "ai-admin-session";
+const isAdmin = () => { try{ return sessionStorage.getItem(SESSION_KEY)==="1" }catch{ return false } };
+function markAdmin(){ $("#admin-btn").classList.toggle("on",isAdmin()); $("#admin-btn").setAttribute("aria-label",isAdmin()?"Abrir panel de administración":"Ingresar como administrador") }
+const adm = $("#adm");
+let admTab="inv", admEdit=null, admQ="";
+adm.addEventListener("close",()=>{document.body.style.overflow="";if(location.hash==="#admin")history.replaceState(null,"",location.pathname+location.search)});
+adm.addEventListener("cancel",e=>{ if(admEdit){e.preventDefault();admEdit=null;renderAdmin()} });
+
+function openLogin(){
+  showDlg(`<div class="dlg single narrow ui">
+    <button class="dclose" type="button" aria-label="Cerrar">${ICON.x}</button>
+    <header><div class="eyebrow">Acceso administrador</div><h2>Ingresar</h2></header>
+    <form id="login" class="login" novalidate>
+      <label class="adm-f" for="lg-u">Usuario<input id="lg-u" autocomplete="username" autocapitalize="none" required></label>
+      <label class="adm-f" for="lg-p">Contraseña<input id="lg-p" type="password" autocomplete="current-password" required></label>
+      <p class="lg-err" id="lg-err" hidden>Usuario o contraseña incorrectos.</p>
+      <button class="btn btn-gold" type="submit">Entrar</button>
+      <small>Solo el administrador puede editar el catálogo. Versión demo: los cambios se guardan en este navegador.</small>
+    </form></div>`);
+  setTimeout(()=>$("#lg-u").focus(),50);
+  $("#login").onsubmit=e=>{
+    e.preventDefault();
+    if($("#lg-u").value.trim().toLowerCase()===ADMIN.user && $("#lg-p").value===ADMIN.pass){
+      try{sessionStorage.setItem(SESSION_KEY,"1")}catch{}
+      markAdmin(); dlg.close(); toast("Sesión iniciada"); openAdmin();
+    } else { $("#lg-err").hidden=false; $("#lg-p").select() }
+  };
+}
+function openAdmin(){
+  if(!isAdmin()) return openLogin();
+  if(dlg.open) dlg.close();
+  renderAdmin(); if(!adm.open) adm.showModal(); document.body.style.overflow="hidden";
+}
+const sw=(n,l,v)=>`<label class="sw"><input type="checkbox" name="${n}" ${v?"checked":""}><i></i><span>${l}</span></label>`;
+const opts=(arr,v)=>arr.map(([val,lab])=>`<option value="${ea(val)}" ${String(v??"")===String(val)?"selected":""}>${lab}</option>`).join("");
+const digits=s=>{const d=String(s??"").replace(/\D/g,"");return d?+d:null};
+const TABS=[["inv","Inventario"],["feat","Destacado"],["fin","Financiación"],["cfg","Configuración"]];
+
+function renderAdmin(){
+  const body={inv:admInv,feat:admFeat,fin:admFin,cfg:admCfg}[admTab]();
+  adm.innerHTML=`<div class="adm ui">
+    <header class="adm-top">
+      <div class="adm-tt"><span class="eyebrow">Panel de administración</span><b>Auto Imperio</b></div>
+      <span class="pill-demo">Demo</span>
+      <div class="adm-act"><button class="btn sm" type="button" data-a="close">Ver catálogo</button><button class="btn sm" type="button" data-a="logout">Salir</button></div>
+    </header>
+    <nav class="adm-tabs" role="tablist">${TABS.map(([k,l])=>`<button type="button" role="tab" data-tab="${k}" aria-selected="${k===admTab}">${l}</button>`).join("")}</nav>
+    <div class="adm-body"><div class="adm-in">${body}</div></div>
+  </div>`;
+  wireAdmin();
+}
+
+/* --- inventario --- */
+function admInv(){
+  if(admEdit) return admForm();
+  const n=DB.cars.length, hid=DB.cars.filter(c=>c.hidden).length, sold=DB.cars.filter(c=>c.sold).length;
+  return `<div class="adm-head"><div><h2 class="adm-h">Inventario</h2><p class="adm-sub">${n} vehículos · ${hid} ocultos · ${sold} vendidos</p></div><button class="btn btn-gold" type="button" data-a="new">+ Agregar vehículo</button></div>
+  <input class="fsearch" id="adm-q" type="search" placeholder="Buscar por marca, modelo o año" value="${ea(admQ)}" autocomplete="off">
+  <div class="adm-list">${DB.cars.map(c=>`<div class="adm-row${c.hidden?" off":""}" data-id="${c.id}" data-k="${ea(norm(c.name))}">
+    <img src="${IMG(c.img[0])}" alt="">
+    <div class="adm-info"><b>${c.b} ${c.m}</b><span class="num">${c.y} · ${km(c)||"—"} · ${fmt(c.p)}</span>
+      <div class="adm-tags">${c.id===DB.featured?'<i class="t gold">Destacado</i>':""}${c.sold?'<i class="t red">Vendido</i>':""}${c.hidden?'<i class="t">Oculto</i>':'<i class="t ok">Publicado</i>'}</div></div>
+    <div class="adm-btns"><button class="btn sm" type="button" data-a="edit">Editar</button><button class="btn sm" type="button" data-a="vis">${c.hidden?"Mostrar":"Ocultar"}</button></div>
+  </div>`).join("")}</div>`;
+}
+function admForm(){
+  const c=admEdit, isNew=!DB.cars.some(x=>x.id===c.id);
+  return `<button class="clear back" type="button" data-a="back">← Volver al inventario</button>
+  <h2 class="adm-h">${isNew?"Nuevo vehículo":`Editar ${ea(c.b)} ${ea(c.m)}`}</h2>
+  <form id="adm-form" class="adm-form" autocomplete="off">
+    <fieldset><legend>Fotos</legend>
+      <div class="ph-grid">${c.img.map((k,j)=>`<div class="ph"><img src="${IMG(k)}" alt="Foto ${j+1}"><span>${j===0?"Principal":""}</span>
+        <div class="ph-act">${j?`<button type="button" data-ph="main" data-j="${j}" aria-label="Usar como principal" title="Usar como principal">★</button>`:""}<button type="button" data-ph="del" data-j="${j}" aria-label="Quitar foto" title="Quitar">✕</button></div></div>`).join("")}
+        <label class="ph add" for="ph-in"><span>+ Agregar fotos</span></label></div>
+      <input type="file" id="ph-in" accept="image/*" multiple hidden>
+      <small class="adm-sub">La primera foto es la principal. Las fotos nuevas se reducen a 1000 px para que carguen rápido.</small>
+    </fieldset>
+    <fieldset><legend>Datos del vehículo</legend><div class="fgrid">
+      <label>Marca<input name="b" required list="dl-brands" value="${ea(c.b)}"></label>
+      <label>Modelo y versión<input name="m" required value="${ea(c.m)}"></label>
+      <label>Año<input name="y" type="number" required min="1950" max="2100" value="${c.y??""}"></label>
+      <label>Precio (COP)<input name="p" inputmode="numeric" required value="${c.p?c.p.toLocaleString("es-CO"):""}"></label>
+      <label>Kilometraje<input name="km" inputmode="numeric" placeholder="0 si es nuevo" value="${c.km!=null?c.km.toLocaleString("es-CO"):""}"></label>
+      <label>Tipo<select name="body">${opts(BODIES.map(x=>[x,x]),c.body)}</select></label>
+      <label>Motor<select name="f"><option value="">—</option>${opts(Object.entries(FUEL),c.f)}</select></label>
+      <label>Transmisión<input name="tr" value="${ea(c.tr||"Automática")}"></label>
+      <label>Potencia (hp)<input name="hp" type="number" min="0" value="${c.hp??""}"></label>
+      <label>Tracción<select name="dt"><option value="">—</option>${opts([["4x4","4x4"],["AWD","AWD"],["4x2","4x2"]],c.dt)}</select></label>
+      <label>Color<input name="c" value="${ea(c.c)}"></label>
+    </div><datalist id="dl-brands">${[...new Set(DB.cars.map(x=>x.b))].map(b=>`<option value="${ea(b)}">`).join("")}</datalist></fieldset>
+    <fieldset><legend>Equipamiento</legend><textarea name="eq" rows="6" placeholder="Un elemento por línea">${ea((c.eq||[]).join("\n"))}</textarea></fieldset>
+    <fieldset><legend>Estado</legend><div class="sw-list">${sw("armored","Blindado",c.armored)}${sw("sold","Vendido (sigue visible con la etiqueta)",c.sold)}${sw("hidden","Ocultar del catálogo",c.hidden)}</div></fieldset>
+    <div class="adm-save"><button type="submit" class="btn btn-gold">${isNew?"Publicar vehículo":"Guardar cambios"}</button><button type="button" class="btn" data-a="back">Cancelar</button></div>
+  </form>
+  ${isNew?"":'<div class="adm-card"><b>Eliminar vehículo</b><p class="adm-sub">Se quita del catálogo y del panel. Si solo se vendió, mejor márcalo como vendido.</p><button type="button" class="btn danger sm" data-a="del">Eliminar vehículo</button></div>'}`;
+}
+function readForm(f,c){
+  const v=n=>f.elements[n].value;
+  c.b=clean(v("b")); c.m=clean(v("m")); c.y=digits(v("y")); c.p=digits(v("p")); c.km=digits(v("km"));
+  c.body=v("body"); c.f=v("f")||null; c.tr=clean(v("tr"))||undefined; c.hp=digits(v("hp")); c.dt=v("dt")||undefined; c.c=clean(v("c"))||undefined;
+  c.eq=v("eq").split("\n").map(clean).filter(Boolean);
+  c.armored=f.elements.armored.checked; c.sold=f.elements.sold.checked; c.hidden=f.elements.hidden.checked;
+}
+function shrink(file){return new Promise((res,rej)=>{const r=new FileReader();r.onerror=rej;r.onload=()=>{const im=new Image();im.onerror=rej;im.onload=()=>{const s=Math.min(1,1000/Math.max(im.width,im.height));const cv=document.createElement("canvas");cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);res(cv.toDataURL("image/jpeg",.8))};im.src=r.result};r.readAsDataURL(file)})}
+
+/* --- destacado --- */
+function admFeat(){
+  return `<div><h2 class="adm-h">Vehículo destacado</h2><p class="adm-sub">Es el que aparece grande al inicio del catálogo. Toca uno para destacarlo.</p></div>
+  <form id="feat-form" class="adm-form"><fieldset><legend>Etiqueta</legend><div class="fgrid"><label>Texto de la etiqueta<input name="featLabel" maxlength="24" value="${ea(DB.cfg.featLabel)}" placeholder="Destacado"></label></div>
+  <div class="adm-save inline"><button class="btn btn-gold sm" type="submit">Guardar etiqueta</button></div></fieldset></form>
+  <div class="feat-grid">${DB.cars.filter(c=>!c.hidden).map(c=>`<button type="button" class="feat-opt" data-feat="${c.id}" aria-pressed="${c.id===DB.featured}"><img src="${IMG(c.img[0])}" alt=""><div><b>${c.b} ${c.m}</b><span class="num">${c.y} · ${short(c.p)}</span></div></button>`).join("")}</div>`;
+}
+
+/* --- financiación --- */
+function admFin(){
+  const f=DB.fin;
+  return `<div><h2 class="adm-h">Financiación</h2><p class="adm-sub">Valores con los que arranca el simulador de cuota en cada ficha. El cliente puede moverlos.</p></div>
+  <form id="fin-form" class="adm-form">
+    <fieldset><legend>Simulador</legend><div class="sw-list">${sw("on","Mostrar el simulador en las fichas",f.on)}</div></fieldset>
+    <fieldset><legend>Valores sugeridos</legend><div class="fgrid">
+      <label>Tasa mes vencido (%)<input name="rate" type="number" step="0.01" min="0" max="10" value="${f.rate}"></label>
+      <label>Cuota inicial sugerida (%)<input name="dp" type="number" min="0" max="90" step="5" value="${f.dp}"></label>
+      <label>Cuota inicial mínima (%)<input name="dpMin" type="number" min="0" max="90" step="5" value="${f.dpMin}"></label>
+      <label>Plazo sugerido<select name="term">${ALLTERMS.map(n=>`<option value="${n}" ${n===f.term?"selected":""}>${n} meses</option>`).join("")}</select></label>
+    </div></fieldset>
+    <fieldset><legend>Plazos disponibles</legend><div class="chk-row">${ALLTERMS.map(n=>`<label class="chk"><input type="checkbox" name="terms" value="${n}" ${f.terms.includes(n)?"checked":""}> ${n} meses</label>`).join("")}</div></fieldset>
+    <fieldset><legend>Aviso al cliente</legend><textarea name="note" rows="3">${ea(f.note)}</textarea></fieldset>
+    <div class="adm-card" id="fin-prev"></div>
+    <div class="adm-save"><button class="btn btn-gold" type="submit">Guardar financiación</button></div>
+  </form>`;
+}
+function finFromForm(fm){
+  const e=fm.elements, terms=[...fm.querySelectorAll('[name=terms]:checked')].map(x=>+x.value);
+  return {on:e.on.checked, rate:Math.max(0,+e.rate.value||0), dp:Math.min(90,Math.max(0,+e.dp.value||0)), dpMin:Math.min(90,Math.max(0,+e.dpMin.value||0)), term:+e.term.value, terms, note:clean(e.note.value)};
+}
+
+/* --- configuración --- */
+function admCfg(){
+  const g=DB.cfg;
+  return `<div><h2 class="adm-h">Configuración</h2><p class="adm-sub">Textos de la portada y datos de contacto.</p></div>
+  <form id="cfg-form" class="adm-form">
+    <fieldset><legend>Contacto</legend><div class="fgrid">
+      <label>WhatsApp (con indicativo)<input name="wa" inputmode="tel" value="${ea(g.wa)}" placeholder="573001234567"></label>
+      <label>Ciudad<input name="city" value="${ea(g.city)}"></label>
+      <label>Instagram (enlace)<input name="ig" type="url" value="${ea(g.ig)}"></label>
+      <label>TikTok (enlace)<input name="tt" type="url" value="${ea(g.tt)}"></label>
+    </div></fieldset>
+    <fieldset><legend>Portada</legend><div class="fgrid one">
+      <label>Título<input name="heroA" value="${ea(g.heroA)}"></label>
+      <label>Título resaltado en dorado<input name="heroB" value="${ea(g.heroB)}"></label>
+      <label>Descripción<textarea name="lead" rows="3">${ea(g.lead)}</textarea></label>
+    </div></fieldset>
+    <div class="adm-save"><button class="btn btn-gold" type="submit">Guardar configuración</button></div>
+  </form>
+  <div class="adm-card"><b>Restablecer la demo</b><p class="adm-sub">Vuelve al inventario y la configuración originales. Se pierden los cambios hechos en este navegador.</p><button class="btn danger sm" type="button" data-a="reset">Restablecer datos</button></div>`;
+}
+
+/* --- eventos --- */
+function armed(btn,label){ if(btn.dataset.armed){return true} btn.dataset.armed="1"; btn.classList.add("armed"); const t=btn.textContent; btn.textContent=label; setTimeout(()=>{if(btn.isConnected){delete btn.dataset.armed;btn.classList.remove("armed");btn.textContent=t}},4000); return false }
+function commit(msg){ const ok=saveDB(); refreshAll(); if(ok) toast(msg); return ok }
+function wireAdmin(){
+  adm.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{admTab=b.dataset.tab;admEdit=null;renderAdmin()});
+  adm.querySelectorAll("[data-a]").forEach(b=>b.onclick=async()=>{
+    const a=b.dataset.a, row=b.closest(".adm-row"), id=row?+row.dataset.id:null, car=id!=null?DB.cars.find(c=>c.id===id):null;
+    if(a==="close") adm.close();
+    if(a==="logout"){ try{sessionStorage.removeItem(SESSION_KEY)}catch{} markAdmin(); adm.close(); toast("Sesión cerrada") }
+    if(a==="new"){ admEdit={id:Date.now(),b:"",m:"",y:new Date().getFullYear(),p:null,km:null,body:"SUV",f:null,img:[],eq:[]}; renderAdmin() }
+    if(a==="edit"){ admEdit=clone(car); renderAdmin() }
+    if(a==="vis"){ car.hidden=!car.hidden; commit(car.hidden?"Vehículo oculto del catálogo":"Vehículo publicado"); renderAdmin() }
+    if(a==="back"){ admEdit=null; renderAdmin() }
+    if(a==="del"){ if(!armed(b,"Confirmar: eliminar")) return; DB.cars=DB.cars.filter(c=>c.id!==admEdit.id); if(DB.featured===admEdit.id) DB.featured=DB.cars[0]?.id; admEdit=null; commit("Vehículo eliminado"); renderAdmin() }
+    if(a==="reset"){ if(!armed(b,"Confirmar: restablecer")) return; try{localStorage.removeItem(DB_KEY)}catch{} DB=loadDB(); refreshAll(); toast("Datos originales restablecidos"); renderAdmin() }
+  });
+  const q=$("#adm-q");
+  if(q){ const f=()=>{admQ=q.value;const t=norm(q.value.trim());adm.querySelectorAll(".adm-row").forEach(r=>r.hidden=!!t&&!r.dataset.k.includes(t))}; q.oninput=f; f() }
+
+  const form=$("#adm-form");
+  if(form){
+    form.addEventListener("input",()=>readForm(form,admEdit)); form.addEventListener("change",()=>readForm(form,admEdit));
+    adm.querySelectorAll("[data-ph]").forEach(b=>b.onclick=()=>{
+      readForm(form,admEdit); const j=+b.dataset.j, im=admEdit.img;
+      if(b.dataset.ph==="del") im.splice(j,1); else im.unshift(...im.splice(j,1));
+      renderAdmin();
+    });
+    $("#ph-in").onchange=async e=>{
+      readForm(form,admEdit); const files=[...e.target.files].filter(f=>f.type.startsWith("image/"));
+      if(!files.length) return; toast("Procesando fotos…");
+      try{ for(const f of files) admEdit.img.push(await shrink(f)); }catch{ toast("No se pudo leer una de las fotos") }
+      renderAdmin();
+    };
+    form.onsubmit=e=>{
+      e.preventDefault(); readForm(form,admEdit);
+      if(!form.reportValidity()) return;
+      if(!admEdit.img.length){ toast("Agrega al menos una foto"); return }
+      if(!admEdit.p){ toast("Escribe el precio"); return }
+      const k=DB.cars.findIndex(c=>c.id===admEdit.id), isNew=k<0;
+      const {i,name,...data}=admEdit;
+      if(isNew) DB.cars.unshift(data); else DB.cars[k]=data;
+      admEdit=null; commit(isNew?"Vehículo publicado":"Cambios guardados"); renderAdmin();
+    };
+  }
+  adm.querySelectorAll("[data-feat]").forEach(b=>b.onclick=()=>{DB.featured=+b.dataset.feat; commit("Destacado actualizado"); renderAdmin()});
+  const ff=$("#feat-form"); if(ff) ff.onsubmit=e=>{e.preventDefault(); DB.cfg.featLabel=clean(ff.elements.featLabel.value); commit("Etiqueta guardada")};
+
+  const fin=$("#fin-form");
+  if(fin){
+    const prev=()=>{const f=finFromForm(fin),P=300e6,dp=Math.max(f.dp,f.dpMin)/100,L=P*(1-dp),r=f.rate/100,n=f.term,q=r?L*r/(1-Math.pow(1+r,-n)):L/n;
+      $("#fin-prev").innerHTML=`<small class="adm-sub">Ejemplo con un vehículo de $300 M, ${Math.round(dp*100)}% de inicial y ${n} meses</small><b class="num fin-ex">${fmt(q)} / mes</b>`};
+    fin.addEventListener("input",prev); prev();
+    fin.onsubmit=e=>{
+      e.preventDefault(); const f=finFromForm(fin);
+      if(!f.terms.length){ toast("Elige al menos un plazo"); return }
+      if(!f.terms.includes(f.term)) f.term=f.terms[f.terms.length-1];
+      if(f.dp<f.dpMin) f.dp=f.dpMin;
+      DB.fin=f; commit("Financiación guardada"); renderAdmin();
+    };
+  }
+  const cf=$("#cfg-form");
+  if(cf) cf.onsubmit=e=>{
+    e.preventDefault(); const v=n=>clean(cf.elements[n].value);
+    if(v("wa").replace(/\D/g,"").length<10){ toast("Revisa el número de WhatsApp"); return }
+    Object.assign(DB.cfg,{wa:v("wa").replace(/\D/g,""),city:v("city")||DEFAULTS.cfg.city,ig:v("ig"),tt:v("tt"),heroA:v("heroA"),heroB:v("heroB"),lead:v("lead")});
+    commit("Configuración guardada");
+  };
+}
+
 /* ---------- inputs ---------- */
 let qt;
 function setQ(v,src){S.q=v.trim();if(src!=="q")$("#q").value=v;if(src!=="top")$("#q-top").value=v;if(src!=="m")$("#q-m").value=v;clearTimeout(qt);qt=setTimeout(render,120)}
@@ -769,9 +1147,19 @@ $("#open-filters").onclick=()=>sheet(true);
 $("#apply").onclick=()=>{sheet(false);document.getElementById("inventario").scrollIntoView({behavior:"smooth"})};
 $("#scrim").onclick=()=>sheet(false);
 
-const general=wa("Hola Auto Imperio, vi su catálogo y quiero más información.");
-$("#wa-top").href=general; $("#wa-float").href=general;
-$("#t-want").innerHTML+=CARS.map(c=>`<option value="${c.id}">${c.name} · ${short(c.p)}</option>`).join("");
+function applyCfg(){
+  const g=DB.cfg; WA=String(g.wa).replace(/\D/g,"");
+  $("#hero-eyebrow").textContent=`${g.city} · Alta gama`;
+  $("#hero-title").innerHTML=`${ea(g.heroA)} <em>${ea(g.heroB)}</em>`;
+  $("#hero-lead").textContent=g.lead;
+  $("#foot-city").textContent=`${g.city}, Colombia`;
+  $("#foot-wa").textContent=WA.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})$/,"+$1 $2 $3 $4");
+  [["#lnk-ig",g.ig],["#lnk-tt",g.tt]].forEach(([s,u])=>{$(s).href=u||"#";$(s).hidden=!u});
+  const general=wa("Hola Auto Imperio, vi su catálogo y quiero más información.");
+  $("#wa-top").href=general; $("#wa-float").href=general;
+  $("#t-want").innerHTML='<option value="">Solo quiero vender mi carro</option>'+CARS.filter(c=>!c.sold).map(c=>`<option value="${c.id}">${c.name} · ${short(c.p)}</option>`).join("");
+}
+function refreshAll(){prep();applyCfg();renderFeature();cmp=cmp.filter(id=>CARS.some(c=>c.id===id));render();renderTray()}
 $("#trade").addEventListener("submit",e=>{
   e.preventDefault();
   const v=id=>$(id).value.trim(), want=CARS.find(c=>c.id==$("#t-want").value);
@@ -780,8 +1168,10 @@ $("#trade").addEventListener("submit",e=>{
   window.open(wa(t),"_blank","noopener");
 });
 
-renderFeature(); render(); renderTray();
+applyCfg(); renderFeature(); render(); renderTray(); markAdmin();
+$("#admin-btn").onclick=openAdmin;
 const h=location.hash.match(/^#v(\d+)$/); if(h) openCar(+h[1]);
+if(location.hash==="#admin") openAdmin();
 </script>
 </body>
 </html>
