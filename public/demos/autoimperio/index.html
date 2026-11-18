@@ -327,6 +327,36 @@ html:has(dialog[open]){overflow:hidden}
 .acard .cbody{gap:6px}
 .acts{display:flex;gap:8px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
 .acts .btn{flex:1}
+.acard.sel{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+
+/* inventario a todo el ancho; editor a la derecha */
+.adm-in.wide{max-width:1680px}
+.inv-split{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:start}
+.inv-split.editing{grid-template-columns:minmax(0,1fr) minmax(400px,480px)}
+.inv-main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.inv-split .adm-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.inv-split.editing .adm-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ed{position:sticky;top:0;max-height:calc(100dvh - var(--admh,110px) - 48px);overflow:auto;overscroll-behavior:contain;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 18px 0;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin}
+.ed-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.ed-head .adm-h{font-size:24px;margin-top:4px}
+.ed-head .icon-btn{flex-shrink:0}
+.ed .adm-form{gap:14px}
+.ed fieldset{background:transparent;padding:14px}
+.ed .fgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ed .ph-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ed .adm-save{bottom:0;background:var(--panel);margin-inline:-18px;padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px))}
+.ed .adm-card{background:transparent;margin-bottom:18px}
+@media (max-width:1280px){
+  .inv-split .adm-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .inv-split.editing .adm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:980px){
+  .inv-split .adm-grid,.inv-split.editing .adm-grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+  .inv-split.editing{grid-template-columns:minmax(0,1fr)}
+  .ed{position:fixed;inset:0;z-index:10;max-height:none;border:0;border-radius:0;padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+  .ed .adm-save{margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+}
+@media (max-width:460px){.ed .fgrid{grid-template-columns:minmax(0,1fr)}.ed .ph-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 /* ---------- user button + admin ---------- */
 .user-btn{flex-shrink:0;width:44px;height:44px;padding:0;border:0;background:transparent;color:#fff;display:grid;place-items:center;border-radius:50%;position:relative;opacity:.9;transition:opacity .2s,transform .15s}
@@ -1012,7 +1042,11 @@ const opts=(arr,v)=>arr.map(([val,lab])=>`<option value="${ea(val)}" ${String(v?
 const digits=s=>{const d=String(s??"").replace(/\D/g,"");return d?+d:null};
 const TABS=[["inv","Inventario"],["feat","Destacado"],["fin","Financiación"],["cfg","Configuración"]];
 
+let lastEdId=null;
 function renderAdmin(){
+  const oldBody=adm.querySelector(".adm-body"), oldEd=adm.querySelector(".ed");
+  const keep={tab:admTab, body:oldBody?.scrollTop||0, ed:oldEd?.scrollTop||0, sameEd:admEdit&&admEdit.id===lastEdId};
+  lastEdId=admEdit?admEdit.id:null;
   const body={inv:admInv,feat:admFeat,fin:admFin,cfg:admCfg}[admTab]();
   adm.innerHTML=`<div class="adm ui">
     <header class="adm-top">
@@ -1021,21 +1055,28 @@ function renderAdmin(){
       <div class="adm-act"><button class="btn sm" type="button" data-a="close">Ver catálogo</button><button class="btn sm" type="button" data-a="logout">Salir</button></div>
     </header>
     <nav class="adm-tabs" role="tablist">${TABS.map(([k,l])=>`<button type="button" role="tab" data-tab="${k}" aria-selected="${k===admTab}">${l}</button>`).join("")}</nav>
-    <div class="adm-body"><div class="adm-in">${body}</div></div>
+    <div class="adm-body"><div class="adm-in${admTab==="inv"?" wide":""}">${body}</div></div>
   </div>`;
+  const b=adm.querySelector(".adm-body"), ed=adm.querySelector(".ed");
+  const top=adm.querySelector(".adm-top").offsetHeight+adm.querySelector(".adm-tabs").offsetHeight;
+  adm.style.setProperty("--admh", top+"px");
+  if(renderAdmin.tab===admTab) b.scrollTop=keep.body;
+  if(ed&&keep.sameEd) ed.scrollTop=keep.ed;
+  renderAdmin.tab=admTab;
   wireAdmin();
 }
+function closeEditor(){ admEdit=null; renderAdmin() }
 
 /* --- inventario --- */
 function admInv(){
-  if(admEdit) return admForm();
   const n=DB.cars.length, hid=DB.cars.filter(c=>c.hidden).length, sold=DB.cars.filter(c=>c.sold).length;
-  return `<div class="adm-head"><div><h2 class="adm-h">Inventario</h2><p class="adm-sub">${n} vehículos · ${hid} ocultos · ${sold} vendidos</p></div><button class="btn btn-gold" type="button" data-a="new">+ Agregar vehículo</button></div>
+  return `<div class="inv-split${admEdit?" editing":""}"><div class="inv-main">
+  <div class="adm-head"><div><h2 class="adm-h">Inventario</h2><p class="adm-sub">${n} vehículos · ${hid} ocultos · ${sold} vendidos</p></div><button class="btn btn-gold" type="button" data-a="new">+ Agregar vehículo</button></div>
   <input class="fsearch" id="adm-q" type="search" placeholder="Buscar por marca, modelo o año" value="${ea(admQ)}" autocomplete="off">
   <div class="adm-grid">${DB.cars.map(c=>{
     const spec=[km(c), FUEL[c.f]||c.tr, c.hp?c.hp+" hp":null].filter(Boolean);
     const tags=(c.id===DB.featured?'<span class="badge new">Destacado</span>':"")+(c.sold?'<span class="badge sold">Vendido</span>':"")+(c.hidden?'<span class="badge off">Oculto</span>':"");
-    return `<article class="acard${c.hidden?" off":""}${c.sold?" sold":""}" data-id="${c.id}" data-k="${ea(norm(c.name))}">
+    return `<article class="acard${c.hidden?" off":""}${c.sold?" sold":""}${admEdit&&admEdit.id===c.id?" sel":""}" data-id="${c.id}" data-k="${ea(norm(c.name))}">
     <button class="amedia" type="button" data-a="edit" aria-label="Editar ${ea(c.b)} ${ea(c.m)}"><img src="${IMG(c.img[0])}" alt="" loading="lazy"><div class="badges">${tags}</div></button>
     <div class="cbody">
       <div class="cbrand"><span>${c.b}</span><span>${c.y}</span></div>
@@ -1044,12 +1085,13 @@ function admInv(){
       <div class="price num">${fmt(c.p)}</div>
       <div class="acts"><button class="btn sm btn-gold" type="button" data-a="edit">Editar</button><button class="btn sm" type="button" data-a="vis">${c.hidden?"Mostrar":"Ocultar"}</button></div>
     </div>
-  </article>`}).join("")}</div>`;
+  </article>`}).join("")}</div>
+  </div>${admEdit?`<aside class="ed" aria-label="Editor del vehículo">${admForm()}</aside>`:""}</div>`;
 }
 function admForm(){
   const c=admEdit, isNew=!DB.cars.some(x=>x.id===c.id);
-  return `<button class="clear back" type="button" data-a="back">← Volver al inventario</button>
-  <h2 class="adm-h">${isNew?"Nuevo vehículo":`Editar ${ea(c.b)} ${ea(c.m)}`}</h2>
+  return `<div class="ed-head"><div><span class="eyebrow">${isNew?"Nuevo vehículo":"Editar publicación"}</span><h2 class="adm-h">${isNew?"Agregar al inventario":`${ea(c.b)} ${ea(c.m)}`}</h2></div>
+    <button class="icon-btn" type="button" data-a="back" aria-label="Cerrar editor" title="Cerrar">${ICON.x}</button></div>
   <form id="adm-form" class="adm-form" autocomplete="off">
     <fieldset><legend>Fotos</legend>
       <div class="ph-grid">${c.img.map((k,j)=>`<div class="ph"><img src="${IMG(k)}" alt="Foto ${j+1}"><span>${j===0?"Principal":""}</span>
