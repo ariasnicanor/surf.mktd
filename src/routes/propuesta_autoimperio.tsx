@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 // The demo is a self-contained static page in public/demos/autoimperio
 // (index.html + assets/). This route only frames it full-screen.
-const DEMO_SRC = "/demos/autoimperio/index.html";
+const DEMO_SRC = "/demos/autoimperio/";
 
 const title = "Propuesta — Marketplace Auto Imperio | Surf Co.";
 const description =
