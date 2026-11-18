@@ -574,8 +574,8 @@ dialog::backdrop{background:rgba(5,5,6,.78);backdrop-filter:blur(4px)}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 /* Conexión a Supabase. Vacío = modo demo (datos y login solo en este navegador). */
-const SB_URL = "";
-const SB_KEY = "";
+const SB_URL = "https://ykwwqhtqrkhqetftxdnw.supabase.co";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlrd3dxaHRxcmtocWV0ZnR4ZG53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwMjkzNzUsImV4cCI6MjExMDYwNTM3NX0.GbVlk0MTVVN0eI3ztKaB7d5yDUnl2DkRAA57R7P6OcA";   // clave pública (anon)
 const sb = (SB_URL && SB_KEY && window.supabase) ? window.supabase.createClient(SB_URL, SB_KEY) : null;
 const LIVE = !!sb;
 
