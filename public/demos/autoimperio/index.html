@@ -111,7 +111,6 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;backgroun
 .brand-btn:hover{border-color:var(--gold)}
 .brand-btn[aria-pressed="true"]{background:var(--fg);color:var(--ink);border-color:var(--fg)}
 .brand-btn[aria-pressed="true"] small{color:#5b564f}
-@media (max-width:720px){.brands{display:none}}
 
 /* ---------- inventory ---------- */
 .inv{padding-block:clamp(28px,4vw,48px)}
@@ -362,10 +361,6 @@ dialog::backdrop{background:rgba(5,5,6,.78);backdrop-filter:blur(4px)}
     </div>
   </section>
 
-  <nav class="brands" aria-label="Marcas">
-    <div class="wrap" id="brand-rail"></div>
-  </nav>
-
   <section class="inv" id="inventario">
     <div class="wrap">
       <div class="inv-head">
@@ -558,12 +553,6 @@ function chipGroup(el,items,isOn,onClick){
   el.querySelectorAll("button").forEach(b=>b.onclick=()=>{onClick(items[b.dataset.j]);render()});
 }
 function renderFilters(){
-  $("#brand-rail").innerHTML=`<button class="brand-btn" type="button" data-b="" aria-pressed="${S.brands.size===0}">Todas <small>${CARS.length}</small></button>`+
-    BRANDS.map(b=>`<button class="brand-btn" type="button" data-b="${b}" aria-pressed="${S.brands.has(b)&&S.brands.size===1}">${b} <small>${CARS.filter(c=>c.b===b).length}</small></button>`).join("");
-  $("#brand-rail").querySelectorAll("button").forEach(btn=>btn.onclick=()=>{
-    S.brands=new Set(btn.dataset.b?[btn.dataset.b]:[]);render();
-    document.getElementById("inventario").scrollIntoView({behavior:"smooth"});
-  });
   chipGroup($("#f-brand"),BRANDS.map(b=>({label:b,v:b})),it=>S.brands.has(it.v),it=>S.brands.has(it.v)?S.brands.delete(it.v):S.brands.add(it.v));
   chipGroup($("#f-cond"),[{label:"Todos",v:"all"},{label:"0 km",v:"new"},{label:"Usados",v:"used"}],it=>S.cond===it.v,it=>S.cond=it.v);
   chipGroup($("#f-price"),PRICES.map((p,j)=>({label:p[0],v:j})),it=>S.price===it.v,it=>S.price=S.price===it.v?null:it.v);
