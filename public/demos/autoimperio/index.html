@@ -69,6 +69,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;backgroun
 .hero{padding-block:clamp(28px,5vw,64px) clamp(24px,4vw,48px);position:relative;overflow:hidden}
 .hero::before{content:"";position:absolute;inset:-20% -10% auto 40%;height:120%;background:radial-gradient(closest-side,rgba(216,170,76,.13),transparent 70%);pointer-events:none}
 .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(24px,4vw,56px);align-items:center;position:relative}
+.hero .wrap:has(.feature[hidden]){grid-template-columns:minmax(0,1fr)}
 .eyebrow{font-family:var(--display);font-stretch:110%;font-weight:600;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
 .hero h1{font-family:var(--display);font-weight:850;font-stretch:112%;font-size:clamp(36px,5.6vw,76px);line-height:.98;letter-spacing:-.025em;margin:14px 0 18px;text-wrap:balance}
 .hero h1 em{font-style:normal;color:var(--gold)}
@@ -328,6 +329,26 @@ html:has(dialog[open]){overflow:hidden}
 .acts{display:flex;gap:8px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
 .acts .btn{flex:1}
 .acard.sel{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+
+/* financiación y configuración a todo el ancho */
+.page-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.head-sw{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.box-grid{display:grid;gap:16px;align-items:stretch}
+.box-grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.box-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.box-grid>fieldset{display:flex;flex-direction:column;gap:12px}
+.box-grid textarea{flex:1;min-height:120px}
+.fgrid.tight{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+.box-help{margin:0}
+.fin-prev{display:flex;flex-direction:column;gap:10px}
+.fin-prev .fin-ex{font-size:32px;line-height:1.1}
+.fin-prev .fin-ex small{font-size:15px;color:var(--muted);font-weight:600}
+.fin-dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;margin:6px 0 0;padding-top:12px;border-top:1px solid var(--line)}
+.fin-dl dt{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.fin-dl dd{margin:2px 0 0;font-weight:600}
+.warn{color:#ff8a8f}
+@media (max-width:1280px){.box-grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.box-grid.four,.box-grid.two{grid-template-columns:minmax(0,1fr)}.head-sw{width:100%}}
 
 /* inventario a todo el ancho; editor a la derecha */
 .adm-in.wide{max-width:1680px}
@@ -735,7 +756,7 @@ function wireSlides(root){
 
 /* ---------- feature + stats + rails ---------- */
 function renderFeature(){
-  const c=CARS.find(x=>x.id===DB.featured)||CARS[0];
+  const c=DB.featured!=null?CARS.find(x=>x.id===DB.featured):null;
   $("#feature").hidden=!c;
   if(c){
   const tag=[DB.cfg.featLabel, c.km===0?"0 km":null].filter(Boolean).join(" · ");
@@ -1040,14 +1061,15 @@ function openAdmin(){
 const sw=(n,l,v)=>`<label class="sw"><input type="checkbox" name="${n}" ${v?"checked":""}><i></i><span>${l}</span></label>`;
 const opts=(arr,v)=>arr.map(([val,lab])=>`<option value="${ea(val)}" ${String(v??"")===String(val)?"selected":""}>${lab}</option>`).join("");
 const digits=s=>{const d=String(s??"").replace(/\D/g,"");return d?+d:null};
-const TABS=[["inv","Inventario"],["feat","Destacado"],["fin","Financiación"],["cfg","Configuración"]];
+const TABS=[["inv","Inventario"],["fin","Financiación"],["cfg","Configuración"]];
 
 let lastEdId=null;
 function renderAdmin(){
   const oldBody=adm.querySelector(".adm-body"), oldEd=adm.querySelector(".ed");
   const keep={tab:admTab, body:oldBody?.scrollTop||0, ed:oldEd?.scrollTop||0, sameEd:admEdit&&admEdit.id===lastEdId};
   lastEdId=admEdit?admEdit.id:null;
-  const body={inv:admInv,feat:admFeat,fin:admFin,cfg:admCfg}[admTab]();
+  if(!TABS.some(t=>t[0]===admTab)) admTab="inv";
+  const body={inv:admInv,fin:admFin,cfg:admCfg}[admTab]();
   adm.innerHTML=`<div class="adm ui">
     <header class="adm-top">
       <div class="adm-tt"><span class="eyebrow">Panel de administración</span><b>Auto Imperio</b></div>
@@ -1055,7 +1077,7 @@ function renderAdmin(){
       <div class="adm-act"><button class="btn sm" type="button" data-a="close">Ver catálogo</button><button class="btn sm" type="button" data-a="logout">Salir</button></div>
     </header>
     <nav class="adm-tabs" role="tablist">${TABS.map(([k,l])=>`<button type="button" role="tab" data-tab="${k}" aria-selected="${k===admTab}">${l}</button>`).join("")}</nav>
-    <div class="adm-body"><div class="adm-in${admTab==="inv"?" wide":""}">${body}</div></div>
+    <div class="adm-body"><div class="adm-in wide">${body}</div></div>
   </div>`;
   const b=adm.querySelector(".adm-body"), ed=adm.querySelector(".ed");
   const top=adm.querySelector(".adm-top").offsetHeight+adm.querySelector(".adm-tabs").offsetHeight;
@@ -1076,7 +1098,7 @@ function admInv(){
   <div class="adm-grid">${DB.cars.map(c=>{
     const spec=[km(c), FUEL[c.f]||c.tr, c.hp?c.hp+" hp":null].filter(Boolean);
     const tags=(c.id===DB.featured?'<span class="badge new">Destacado</span>':"")+(c.sold?'<span class="badge sold">Vendido</span>':"")+(c.hidden?'<span class="badge off">Oculto</span>':"");
-    return `<article class="acard${c.hidden?" off":""}${c.sold?" sold":""}${admEdit&&admEdit.id===c.id?" sel":""}" data-id="${c.id}" data-k="${ea(norm(c.name))}">
+    return `<article class="acard${c.hidden?" off":""}${c.sold?" sold":""}${admEdit&&admEdit.id===c.id?" sel":""}" data-id="${c.id}" data-k="${ea(norm(`${c.b} ${c.m} ${c.y}`))}">
     <button class="amedia" type="button" data-a="edit" aria-label="Editar ${ea(c.b)} ${ea(c.m)}"><img src="${IMG(c.img[0])}" alt="" loading="lazy"><div class="badges">${tags}</div></button>
     <div class="cbody">
       <div class="cbrand"><span>${c.b}</span><span>${c.y}</span></div>
@@ -1114,7 +1136,7 @@ function admForm(){
       <label>Color<input name="c" value="${ea(c.c)}"></label>
     </div><datalist id="dl-brands">${[...new Set(DB.cars.map(x=>x.b))].map(b=>`<option value="${ea(b)}">`).join("")}</datalist></fieldset>
     <fieldset><legend>Equipamiento</legend><textarea name="eq" rows="6" placeholder="Un elemento por línea">${ea((c.eq||[]).join("\n"))}</textarea></fieldset>
-    <fieldset><legend>Estado</legend><div class="sw-list">${sw("armored","Blindado",c.armored)}${sw("sold","Vendido (sigue visible con la etiqueta)",c.sold)}${sw("hidden","Ocultar del catálogo",c.hidden)}</div></fieldset>
+    <fieldset><legend>Estado</legend><div class="sw-list">${sw("feat","Marcar como destacado (aparece grande al inicio del catálogo)",c.feat)}${sw("armored","Blindado",c.armored)}${sw("sold","Vendido (sigue visible con la etiqueta)",c.sold)}${sw("hidden","Ocultar del catálogo",c.hidden)}</div></fieldset>
     <div class="adm-save"><button type="submit" class="btn btn-gold">${isNew?"Publicar vehículo":"Guardar cambios"}</button><button type="button" class="btn" data-a="back">Cancelar</button></div>
   </form>
   ${isNew?"":'<div class="adm-card"><b>Eliminar vehículo</b><p class="adm-sub">Se quita del catálogo y del panel. Si solo se vendió, mejor márcalo como vendido.</p><button type="button" class="btn danger sm" data-a="del">Eliminar vehículo</button></div>'}`;
@@ -1124,33 +1146,29 @@ function readForm(f,c){
   c.b=clean(v("b")); c.m=clean(v("m")); c.y=digits(v("y")); c.p=digits(v("p")); c.km=digits(v("km"));
   c.body=v("body"); c.f=v("f")||null; c.tr=clean(v("tr"))||undefined; c.hp=digits(v("hp")); c.dt=v("dt")||undefined; c.c=clean(v("c"))||undefined;
   c.eq=v("eq").split("\n").map(clean).filter(Boolean);
-  c.armored=f.elements.armored.checked; c.sold=f.elements.sold.checked; c.hidden=f.elements.hidden.checked;
+  c.feat=f.elements.feat.checked; c.armored=f.elements.armored.checked; c.sold=f.elements.sold.checked; c.hidden=f.elements.hidden.checked;
 }
 function shrink(file){return new Promise((res,rej)=>{const r=new FileReader();r.onerror=rej;r.onload=()=>{const im=new Image();im.onerror=rej;im.onload=()=>{const s=Math.min(1,1000/Math.max(im.width,im.height));const cv=document.createElement("canvas");cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);res(cv.toDataURL("image/jpeg",.8))};im.src=r.result};r.readAsDataURL(file)})}
-
-/* --- destacado --- */
-function admFeat(){
-  return `<div><h2 class="adm-h">Vehículo destacado</h2><p class="adm-sub">Es el que aparece grande al inicio del catálogo. Toca uno para destacarlo.</p></div>
-  <form id="feat-form" class="adm-form"><fieldset><legend>Etiqueta</legend><div class="fgrid"><label>Texto de la etiqueta<input name="featLabel" maxlength="24" value="${ea(DB.cfg.featLabel)}" placeholder="Destacado"></label></div>
-  <div class="adm-save inline"><button class="btn btn-gold sm" type="submit">Guardar etiqueta</button></div></fieldset></form>
-  <div class="feat-grid">${DB.cars.filter(c=>!c.hidden).map(c=>`<button type="button" class="feat-opt" data-feat="${c.id}" aria-pressed="${c.id===DB.featured}"><img src="${IMG(c.img[0])}" alt=""><div><b>${c.b} ${c.m}</b><span class="num">${c.y} · ${short(c.p)}</span></div></button>`).join("")}</div>`;
-}
 
 /* --- financiación --- */
 function admFin(){
   const f=DB.fin;
-  return `<div><h2 class="adm-h">Financiación</h2><p class="adm-sub">Valores con los que arranca el simulador de cuota en cada ficha. El cliente puede moverlos.</p></div>
-  <form id="fin-form" class="adm-form">
-    <fieldset><legend>Simulador</legend><div class="sw-list">${sw("on","Mostrar el simulador en las fichas",f.on)}</div></fieldset>
-    <fieldset><legend>Valores sugeridos</legend><div class="fgrid">
-      <label>Tasa mes vencido (%)<input name="rate" type="number" step="0.01" min="0" max="10" value="${f.rate}"></label>
-      <label>Cuota inicial sugerida (%)<input name="dp" type="number" min="0" max="90" step="5" value="${f.dp}"></label>
-      <label>Cuota inicial mínima (%)<input name="dpMin" type="number" min="0" max="90" step="5" value="${f.dpMin}"></label>
-      <label>Plazo sugerido<select name="term">${ALLTERMS.map(n=>`<option value="${n}" ${n===f.term?"selected":""}>${n} meses</option>`).join("")}</select></label>
-    </div></fieldset>
-    <fieldset><legend>Plazos disponibles</legend><div class="chk-row">${ALLTERMS.map(n=>`<label class="chk"><input type="checkbox" name="terms" value="${n}" ${f.terms.includes(n)?"checked":""}> ${n} meses</label>`).join("")}</div></fieldset>
-    <fieldset><legend>Aviso al cliente</legend><textarea name="note" rows="3">${ea(f.note)}</textarea></fieldset>
-    <div class="adm-card" id="fin-prev"></div>
+  return `<form id="fin-form" class="adm-form">
+    <div class="page-head">
+      <div><h2 class="adm-h">Financiación</h2><p class="adm-sub">Valores con los que arranca el simulador de cuota en cada ficha. El cliente puede moverlos.</p></div>
+      <div class="head-sw">${sw("on","Mostrar el simulador en las fichas",f.on)}</div>
+    </div>
+    <div class="box-grid four">
+      <fieldset><legend>Valores sugeridos</legend><div class="fgrid tight">
+        <label>Tasa mes vencido (%)<input name="rate" type="number" step="0.01" min="0" max="10" value="${f.rate}"></label>
+        <label>Plazo sugerido<select name="term">${ALLTERMS.map(n=>`<option value="${n}" ${n===f.term?"selected":""}>${n} meses</option>`).join("")}</select></label>
+        <label>Cuota inicial sugerida (%)<input name="dp" type="number" min="0" max="90" step="5" value="${f.dp}"></label>
+        <label>Cuota inicial mínima (%)<input name="dpMin" type="number" min="0" max="90" step="5" value="${f.dpMin}"></label>
+      </div></fieldset>
+      <fieldset><legend>Plazos disponibles</legend><p class="adm-sub box-help">Los que el cliente puede elegir en el simulador.</p><div class="chk-row">${ALLTERMS.map(n=>`<label class="chk"><input type="checkbox" name="terms" value="${n}" ${f.terms.includes(n)?"checked":""}> ${n} meses</label>`).join("")}</div></fieldset>
+      <fieldset><legend>Aviso al cliente</legend><p class="adm-sub box-help">Se muestra debajo del simulador.</p><textarea name="note" rows="6">${ea(f.note)}</textarea></fieldset>
+      <fieldset><legend>Ejemplo</legend><div id="fin-prev" class="fin-prev"></div></fieldset>
+    </div>
     <div class="adm-save"><button class="btn btn-gold" type="submit">Guardar financiación</button></div>
   </form>`;
 }
@@ -1162,19 +1180,22 @@ function finFromForm(fm){
 /* --- configuración --- */
 function admCfg(){
   const g=DB.cfg;
-  return `<div><h2 class="adm-h">Configuración</h2><p class="adm-sub">Textos de la portada y datos de contacto.</p></div>
-  <form id="cfg-form" class="adm-form">
-    <fieldset><legend>Contacto</legend><div class="fgrid">
-      <label>WhatsApp (con indicativo)<input name="wa" inputmode="tel" value="${ea(g.wa)}" placeholder="573001234567"></label>
-      <label>Ciudad<input name="city" value="${ea(g.city)}"></label>
-      <label>Instagram (enlace)<input name="ig" type="url" value="${ea(g.ig)}"></label>
-      <label>TikTok (enlace)<input name="tt" type="url" value="${ea(g.tt)}"></label>
-    </div></fieldset>
-    <fieldset><legend>Portada</legend><div class="fgrid one">
-      <label>Título<input name="heroA" value="${ea(g.heroA)}"></label>
-      <label>Título resaltado en dorado<input name="heroB" value="${ea(g.heroB)}"></label>
-      <label>Descripción<textarea name="lead" rows="3">${ea(g.lead)}</textarea></label>
-    </div></fieldset>
+  return `<form id="cfg-form" class="adm-form">
+    <div class="page-head"><div><h2 class="adm-h">Configuración</h2><p class="adm-sub">Textos de la portada y datos de contacto.</p></div></div>
+    <div class="box-grid two">
+      <fieldset><legend>Contacto</legend><div class="fgrid tight">
+        <label>WhatsApp (con indicativo)<input name="wa" inputmode="tel" value="${ea(g.wa)}" placeholder="573001234567"></label>
+        <label>Ciudad<input name="city" value="${ea(g.city)}"></label>
+        <label>Instagram (enlace)<input name="ig" type="url" value="${ea(g.ig)}"></label>
+        <label>TikTok (enlace)<input name="tt" type="url" value="${ea(g.tt)}"></label>
+      </div></fieldset>
+      <fieldset><legend>Portada</legend><div class="fgrid one">
+        <label>Título<input name="heroA" value="${ea(g.heroA)}"></label>
+        <label>Título resaltado en dorado<input name="heroB" value="${ea(g.heroB)}"></label>
+        <label>Descripción<textarea name="lead" rows="3">${ea(g.lead)}</textarea></label>
+        <label>Etiqueta del vehículo destacado<input name="featLabel" maxlength="24" value="${ea(g.featLabel)}" placeholder="Destacado"></label>
+      </div><p class="adm-sub box-help">El vehículo destacado se elige desde su publicación en Inventario.</p></fieldset>
+    </div>
     <div class="adm-save"><button class="btn btn-gold" type="submit">Guardar configuración</button></div>
   </form>
   ${LIVE?"":'<div class="adm-card"><b>Restablecer la demo</b><p class="adm-sub">Vuelve al inventario y la configuración originales. Se pierden los cambios hechos en este navegador.</p><button class="btn danger sm" type="button" data-a="reset">Restablecer datos</button></div>'}`;
@@ -1198,11 +1219,11 @@ function wireAdmin(){
     const a=b.dataset.a, row=b.closest(".acard"), id=row?+row.dataset.id:null, car=id!=null?DB.cars.find(c=>c.id===id):null;
     if(a==="close") adm.close();
     if(a==="logout"){ if(LIVE){ try{await sb.auth.signOut()}catch{} ADMIN_OK=false } try{sessionStorage.removeItem(SESSION_KEY)}catch{} markAdmin(); adm.close(); toast("Sesión cerrada") }
-    if(a==="new"){ admEdit={id:Date.now(),b:"",m:"",y:new Date().getFullYear(),p:null,km:null,body:"SUV",f:null,img:[],eq:[]}; renderAdmin() }
-    if(a==="edit"){ admEdit=clone(car); renderAdmin() }
+    if(a==="new"){ admEdit={id:Date.now(),b:"",m:"",y:new Date().getFullYear(),p:null,km:null,body:"SUV",f:null,img:[],eq:[],feat:false}; renderAdmin() }
+    if(a==="edit"){ admEdit=clone(car); admEdit.feat=car.id===DB.featured; renderAdmin() }
     if(a==="vis"){ car.hidden=!car.hidden; const hid=car.hidden; renderAdmin(); commit(hid?"Vehículo oculto del catálogo":"Vehículo publicado",()=>sbPatchCar(car.id,{hidden:hid})) }
     if(a==="back"){ admEdit=null; renderAdmin() }
-    if(a==="del"){ if(!armed(b,"Confirmar: eliminar")) return; const id=admEdit.id, wasFeat=DB.featured===id; DB.cars=DB.cars.filter(c=>c.id!==id); if(wasFeat) DB.featured=DB.cars[0]?.id; admEdit=null; renderAdmin(); commit("Vehículo eliminado",async()=>{await sbDeleteCar(id); if(wasFeat) await sbSaveSettings()}) }
+    if(a==="del"){ if(!armed(b,"Confirmar: eliminar")) return; const id=admEdit.id, wasFeat=DB.featured===id; DB.cars=DB.cars.filter(c=>c.id!==id); if(wasFeat) DB.featured=null; admEdit=null; renderAdmin(); commit("Vehículo eliminado",async()=>{await sbDeleteCar(id); if(wasFeat) await sbSaveSettings()}) }
     if(a==="reset"){ if(!armed(b,"Confirmar: restablecer")) return; try{localStorage.removeItem(DB_KEY)}catch{} DB=loadDB(); refreshAll(); toast("Datos originales restablecidos"); renderAdmin() }
   });
   const q=$("#adm-q");
@@ -1228,19 +1249,22 @@ function wireAdmin(){
       if(!admEdit.img.length){ toast("Agrega al menos una foto"); return }
       if(!admEdit.p){ toast("Escribe el precio"); return }
       const k=DB.cars.findIndex(c=>c.id===admEdit.id), isNew=k<0;
-      const {i,name,...data}=admEdit;
+      const {i,name,feat,...data}=admEdit;
       if(isNew){ data.sort=Math.min(0,...DB.cars.map(c=>c.sort??0))-1; DB.cars.unshift(data) } else DB.cars[k]=data;
-      admEdit=null; renderAdmin();
-      commit(isNew?"Vehículo publicado":"Cambios guardados",async()=>{ data.img=await uploadPhotos(data); await sbSaveCar(data) });
+      const prevFeat=DB.featured;
+      if(feat) DB.featured=data.id; else if(DB.featured===data.id) DB.featured=null;
+      const featChanged=prevFeat!==DB.featured;
+      admEdit=null; prep(); renderAdmin();
+      commit(isNew?"Vehículo publicado":featChanged&&feat?"Guardado y marcado como destacado":"Cambios guardados",async()=>{ data.img=await uploadPhotos(data); await sbSaveCar(data); if(featChanged) await sbSaveSettings() });
     };
   }
-  adm.querySelectorAll("[data-feat]").forEach(b=>b.onclick=()=>{DB.featured=+b.dataset.feat; renderAdmin(); commit("Destacado actualizado",sbSaveSettings)});
-  const ff=$("#feat-form"); if(ff) ff.onsubmit=e=>{e.preventDefault(); DB.cfg.featLabel=clean(ff.elements.featLabel.value); commit("Etiqueta guardada",sbSaveSettings)};
 
   const fin=$("#fin-form");
   if(fin){
     const prev=()=>{const f=finFromForm(fin),P=300e6,dp=Math.max(f.dp,f.dpMin)/100,L=P*(1-dp),r=f.rate/100,n=f.term,q=r?L*r/(1-Math.pow(1+r,-n)):L/n;
-      $("#fin-prev").innerHTML=`<small class="adm-sub">Ejemplo con un vehículo de $300 M, ${Math.round(dp*100)}% de inicial y ${n} meses</small><b class="num fin-ex">${fmt(q)} / mes</b>`};
+      $("#fin-prev").innerHTML=`<span class="adm-sub">Vehículo de $300 M</span><b class="num fin-ex">${fmt(q)}<small> / mes</small></b>
+        <dl class="fin-dl num"><div><dt>Cuota inicial</dt><dd>${Math.round(dp*100)}% · ${short(P*dp)}</dd></div><div><dt>Financias</dt><dd>${short(L)}</dd></div><div><dt>Plazo</dt><dd>${n} meses</dd></div><div><dt>Tasa</dt><dd>${f.rate}% M.V.</dd></div></dl>
+        ${f.on?"":'<p class="adm-sub warn">El simulador está oculto en las fichas.</p>'}`};
     fin.addEventListener("input",prev); prev();
     fin.onsubmit=e=>{
       e.preventDefault(); const f=finFromForm(fin);
@@ -1254,7 +1278,7 @@ function wireAdmin(){
   if(cf) cf.onsubmit=e=>{
     e.preventDefault(); const v=n=>clean(cf.elements[n].value);
     if(v("wa").replace(/\D/g,"").length<10){ toast("Revisa el número de WhatsApp"); return }
-    Object.assign(DB.cfg,{wa:v("wa").replace(/\D/g,""),city:v("city")||DEFAULTS.cfg.city,ig:v("ig"),tt:v("tt"),heroA:v("heroA"),heroB:v("heroB"),lead:v("lead")});
+    Object.assign(DB.cfg,{wa:v("wa").replace(/\D/g,""),city:v("city")||DEFAULTS.cfg.city,ig:v("ig"),tt:v("tt"),heroA:v("heroA"),heroB:v("heroB"),lead:v("lead"),featLabel:v("featLabel")});
     commit("Configuración guardada",sbSaveSettings);
   };
 }
