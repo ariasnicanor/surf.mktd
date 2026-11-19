@@ -375,9 +375,11 @@ header.top::after{content:"";position:absolute;left:0;bottom:-2px;height:2px;wid
 .hero p.lead{margin-bottom:22px}
 .stats{margin-top:26px;padding-top:0}
 .feature{border-radius:3px;border:1px solid var(--line);aspect-ratio:auto;background:var(--panel);
-  display:flex;flex-direction:column;align-self:center}
+  display:flex;flex-direction:column;align-self:center;justify-self:end;
+  /* el lado de la foto sale del alto disponible: nunca se recorta y la tarjeta entra en pantalla */
+  width:min(100%,max(300px,calc(100svh - 290px)),680px)}
 /* la foto se ve completa (son cuadradas); solo se recorta arriba/abajo si la pantalla es baja */
-.feature img{height:auto;aspect-ratio:1/1;max-height:clamp(300px,calc(100svh - 64px - 70px - 130px),720px)}
+.feature img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover}
 .feature::before{content:"";position:absolute;left:0;top:0;width:38%;height:3px;background:var(--gold);z-index:2}
 .feature .tag{z-index:2}
 .feature .shade{position:relative;inset:auto;z-index:2;margin:-52px 18px 18px;width:auto;
@@ -386,7 +388,8 @@ header.top::after{content:"";position:absolute;left:0;bottom:-2px;height:2px;wid
 .feature .shade .eyebrow::before{display:none}
 .feature .price{color:var(--fg)}
 @media (max-width:880px){
-  .feature img{aspect-ratio:4/3;max-height:none}
+  .feature{width:auto;justify-self:stretch}
+  .feature img{aspect-ratio:4/3}
   .feature .shade{margin:-36px 12px 12px;padding:16px 18px}
   .stats>div:first-child{padding-left:14px}
 }
