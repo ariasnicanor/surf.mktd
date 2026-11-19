@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Auto Prime Vitrina</title>
+<meta name="description" content="Auto Prime, Bucaramanga: compramos y vendemos carros. Inventario completo, comparador y simulador de cuota.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Auto Prime. Layout: vitrina nocturna. Encabezado fijo, héroe partido con el auto destacado,
+   inventario con filtros laterales en PC y hoja inferior en mobile. */
+:root{
+  --ink:#09090a;        /* fondo: negro del logo */
+  --panel:#131315;
+  --panel-2:#1b1b1e;
+  --line:#2a2a2e;
+  --fg:#f2f3f5;
+  --muted:#9b9ea5;
+  --gold:#c9ced6;       /* acento: el cromo del logo */
+  --gold-soft:rgba(201,206,214,.14);
+  --red:#e2262e;        /* solo para el sello Vendido */
+  --wa:#25d366;
+  --display:"Archivo", "Arial Narrow", system-ui, sans-serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--ink);color:var(--fg);font:16px/1.5 var(--body);overflow-x:hidden}
+img{max-width:100%;display:block}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1360px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.num{font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- header ---------- */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--ink)}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(9,9,10,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;height:64px}
+.mark{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
+.mark img{height:44px;width:auto}
+.top-search{flex:1;max-width:460px;margin-left:auto;position:relative}
+.top-search input{width:100%;height:42px;border-radius:999px;border:1px solid var(--line);background:var(--panel);padding:0 16px 0 42px;outline:none}
+.top-search input:focus{border-color:var(--gold)}
+.top-search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.6}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);font-weight:600;text-decoration:none;white-space:nowrap;transition:background .2s,border-color .2s,transform .15s}
+.btn:hover{border-color:#4a4550}
+.btn:active{transform:scale(.97)}
+.btn-wa{background:var(--wa);border-color:var(--wa);color:#05210f}
+.btn-wa:hover{background:#2fe174;border-color:#2fe174}
+.btn-gold{background:linear-gradient(180deg,#eef0f3,#b9bec7);border-color:var(--gold);color:#0b0b0c}
+.btn-gold:hover{background:#e4e7ec;border-color:#e4e7ec}
+.top .btn-wa{height:42px}
+@media (max-width:720px){
+  .top-search{display:none}
+  .top .btn-wa span{display:none}
+  .top .btn-wa{width:42px;padding:0;margin-left:auto}
+}
+
+/* ---------- hero ---------- */
+.hero{padding-block:clamp(28px,5vw,64px) clamp(24px,4vw,48px);position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-20% -10% auto 40%;height:120%;background:radial-gradient(closest-side,rgba(201,206,214,.13),transparent 70%);pointer-events:none}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(24px,4vw,56px);align-items:center;position:relative}
+.hero .wrap:has(.feature[hidden]){grid-template-columns:minmax(0,1fr)}
+.eyebrow{font-family:var(--display);font-stretch:110%;font-weight:600;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.hero h1{font-family:var(--display);font-weight:850;font-stretch:112%;font-size:clamp(36px,5.6vw,76px);line-height:.98;letter-spacing:-.025em;margin:14px 0 18px;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero p.lead{color:var(--muted);font-size:clamp(16px,1.4vw,19px);max-width:52ch;margin:0 0 26px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:10px}
+.hero-ctas .btn{height:50px;padding:0 24px}
+.stats{display:flex;gap:clamp(18px,3vw,40px);margin-top:34px;padding-top:22px;border-top:1px solid var(--line)}
+.stats b{display:block;font-family:var(--display);font-weight:800;font-stretch:105%;font-size:clamp(26px,3vw,36px);line-height:1}
+.stats span{font-size:13px;color:var(--muted)}
+.feature{position:relative;border-radius:22px;overflow:hidden;background:var(--panel);border:1px solid var(--line);cursor:pointer;aspect-ratio:4/4.3;max-width:100%}
+.feature img{width:100%;height:100%;object-fit:cover;object-position:50% 52%;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.feature:hover img{transform:scale(1.035)}
+.feature .shade{position:absolute;inset:auto 0 0;padding:70px 22px 20px;background:linear-gradient(transparent,rgba(8,7,9,.94) 62%)}
+.feature .tag{position:absolute;top:16px;left:16px}
+.feature h2{font-family:var(--display);font-weight:800;font-stretch:108%;font-size:clamp(22px,2.3vw,30px);margin:4px 0 6px;line-height:1.05}
+.feature .row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.feature .price{font-family:var(--display);font-weight:800;font-size:clamp(22px,2.2vw,28px)}
+.feature .meta{color:var(--muted);font-size:14px}
+@media (max-width:880px){.hero .wrap{grid-template-columns:1fr}.feature{aspect-ratio:4/3.4}}
+.m-search{display:none;position:relative;margin-bottom:18px}
+.m-search input{width:100%;height:48px;border-radius:14px;border:1px solid var(--line);background:var(--panel);padding:0 16px 0 44px;outline:none}
+.m-search input:focus{border-color:var(--gold)}
+.m-search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);opacity:.6}
+@media (max-width:720px){
+  .top .btn-wa{display:none}
+  .hero{padding-block:22px 28px}
+  .hero h1{font-size:34px;margin:10px 0 12px}
+  .hero p.lead{font-size:15px;margin-bottom:18px}
+  .hero-ctas .btn{height:46px;padding:0 16px;flex:1 1 0}
+  .stats{margin-top:20px;padding-top:16px}
+  .m-search{display:block}
+}
+
+/* ---------- brands rail ---------- */
+.brands{border-block:1px solid var(--line);background:var(--panel)}
+.brands .wrap{display:flex;gap:8px;overflow-x:auto;padding-block:14px;scrollbar-width:none}
+.brands .wrap::-webkit-scrollbar{display:none}
+.brand-btn{flex-shrink:0;display:flex;align-items:baseline;gap:8px;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:transparent;font-family:var(--display);font-weight:700;font-stretch:110%;font-size:15px;letter-spacing:.01em;transition:all .2s}
+.brand-btn small{font-family:var(--body);font-weight:600;font-size:12px;color:var(--muted)}
+.brand-btn:hover{border-color:var(--gold)}
+.brand-btn[aria-pressed="true"]{background:var(--fg);color:var(--ink);border-color:var(--fg)}
+.brand-btn[aria-pressed="true"] small{color:#5b564f}
+
+/* ---------- inventory ---------- */
+.inv{padding-block:clamp(28px,4vw,48px)}
+.inv-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.inv-head h2{font-family:var(--display);font-weight:800;font-stretch:112%;font-size:clamp(28px,3.4vw,42px);line-height:1;margin:6px 0 0;letter-spacing:-.02em}
+.tools{display:flex;gap:8px;align-items:center}
+.select{height:44px;border-radius:999px;border:1px solid var(--line);background:var(--panel);padding:0 38px 0 16px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23a29c93' stroke-width='2'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center;max-width:100%}
+.filters-btn{display:none}
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:28px;align-items:start}
+aside.filters{position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px);display:flex;flex-direction:column;gap:22px;max-height:calc(100vh - 100px);overflow:auto;padding-right:4px;scrollbar-width:thin}
+.fgroup h3{margin:0 0 10px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:14px;font-weight:500;transition:all .15s}
+.chip:hover{border-color:#4a4550}
+.chip[aria-pressed="true"]{background:var(--gold-soft);border-color:var(--gold);color:#f5d999}
+.fsearch{width:100%;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--panel);padding:0 14px;outline:none}
+.fsearch:focus{border-color:var(--gold)}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel);width:100%;text-align:left}
+.toggle i{width:38px;height:22px;border-radius:99px;background:var(--line);position:relative;flex-shrink:0;transition:background .2s}
+.toggle i::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--fg);transition:transform .2s}
+.toggle[aria-pressed="true"] i{background:var(--gold)}
+.toggle[aria-pressed="true"] i::after{transform:translateX(16px)}
+.active-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:16px;min-height:0}
+.active-row:empty{display:none}
+.pill-x{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px 0 13px;border-radius:999px;background:var(--panel-2);border:1px solid var(--line);font-size:13px}
+.pill-x svg{opacity:.7}
+.clear{background:none;border:0;color:var(--gold);font-weight:600;font-size:14px;padding:6px 8px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:border-color .25s,transform .25s,box-shadow .25s;animation:rise .45s both}
+.card:hover{border-color:#47424d;transform:translateY(-3px);box-shadow:0 18px 40px -20px rgba(0,0,0,.8)}
+@keyframes rise{from{opacity:.001;transform:translateY(10px)}to{opacity:1;transform:none}}
+.media{position:relative;aspect-ratio:4/3;background:#000;overflow:hidden}
+.media .slides{position:absolute;inset:0}
+.slides{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.slides::-webkit-scrollbar{display:none}
+.slides img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;object-position:50% 48%;scroll-snap-align:start}
+.dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
+.dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.45);transition:all .2s}
+.dots i.on{background:#fff;width:16px;border-radius:4px}
+.nav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:0;background:rgba(9,9,10,.7);display:grid;place-items:center;opacity:0;transition:opacity .2s}
+.nav.prev{left:10px}.nav.next{right:10px}
+.card:hover .nav{opacity:1}
+@media (hover:none){.nav{display:none}}
+.badges{position:absolute;top:12px;left:12px;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100% - 64px)}
+.badge{height:24px;display:inline-flex;align-items:center;padding:0 9px;border-radius:6px;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:rgba(9,9,10,.78);backdrop-filter:blur(6px);color:var(--fg)}
+.badge.new{background:var(--gold);color:#0b0b0c}
+.badge.ev{color:#8ff0b4}
+.badge.arm{color:#f5d999}
+.fav{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(9,9,10,.7);display:grid;place-items:center;transition:transform .15s}
+.fav:active{transform:scale(.88)}
+.fav[aria-pressed="true"] svg{fill:var(--red);stroke:var(--red)}
+.cbody{padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.cbrand{display:flex;justify-content:space-between;font-family:var(--display);font-stretch:112%;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.cbrand span:last-child{color:var(--muted);letter-spacing:.06em}
+.cname{font-family:var(--display);font-weight:750;font-stretch:104%;font-size:19px;line-height:1.15;margin:0;text-wrap:balance}
+.specs{display:flex;flex-wrap:wrap;gap:4px 12px;color:var(--muted);font-size:13.5px}
+.specs span{display:inline-flex;align-items:center;gap:5px}
+.cfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
+.price{font-family:var(--display);font-weight:800;font-stretch:102%;font-size:22px;letter-spacing:-.01em;white-space:nowrap}
+.price small{font-size:12px;color:var(--muted);font-weight:600;margin-left:3px}
+.cact{display:flex;gap:6px}
+.icon-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--panel-2);display:grid;place-items:center;transition:all .15s;text-decoration:none}
+.icon-btn:hover{border-color:#4a4550}
+.icon-btn.wa{background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.35);color:var(--wa)}
+.icon-btn[aria-pressed="true"]{background:var(--gold-soft);border-color:var(--gold);color:var(--gold)}
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;border:1px dashed var(--line);border-radius:18px;color:var(--muted)}
+.empty b{display:block;color:var(--fg);font-family:var(--display);font-size:22px;margin-bottom:6px}
+
+@media (max-width:980px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .filters-btn{display:inline-flex}
+  aside.filters{position:fixed;inset:auto 0 0 0;z-index:80;max-height:84vh;background:var(--panel);border-top:1px solid var(--line);border-radius:22px 22px 0 0;padding:8px max(18px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));transform:translateY(105%);transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto}
+  aside.filters.open{transform:none}
+  .sheet-handle{display:block!important}
+  .sheet-foot{display:flex!important}
+}
+@media (max-width:560px){
+  .grid{grid-template-columns:minmax(0,1fr)}
+  .inv-head{align-items:stretch}
+  .tools{width:100%}
+  .tools .select{flex:1}
+}
+.sheet-handle{display:none;width:44px;height:5px;border-radius:9px;background:var(--line);margin:4px auto 6px}
+.sheet-head{display:flex;justify-content:space-between;align-items:center}
+.sheet-head b{font-family:var(--display);font-size:20px;font-weight:800}
+.sheet-foot{display:none;gap:8px;position:sticky;bottom:-18px;background:var(--panel);padding-block:12px}
+.sheet-foot .btn{flex:1}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:70;opacity:0;pointer-events:none;transition:opacity .3s}
+.scrim.on{opacity:1;pointer-events:auto}
+
+/* ---------- sell / trade ---------- */
+.sell{padding-block:clamp(36px,6vw,80px);border-top:1px solid var(--line);background:linear-gradient(180deg,var(--panel),var(--ink))}
+.sell .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(24px,5vw,72px);align-items:center}
+.sell h2{font-family:var(--display);font-weight:850;font-stretch:112%;font-size:clamp(30px,4vw,52px);line-height:1;margin:10px 0 14px;letter-spacing:-.02em;text-wrap:balance}
+.sell p{color:var(--muted);max-width:46ch;margin:0}
+.steps{display:grid;gap:12px;margin-top:24px;counter-reset:s}
+.steps li{list-style:none;display:flex;gap:12px;align-items:baseline;color:var(--fg)}
+.steps li::before{counter-increment:s;content:counter(s);font-family:var(--display);font-weight:800;color:var(--gold);min-width:18px}
+.steps{padding:0}
+form.trade{background:var(--panel-2);border:1px solid var(--line);border-radius:20px;padding:clamp(18px,3vw,28px);display:grid;grid-template-columns:1fr 1fr;gap:14px}
+form.trade label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--muted);min-width:0}
+form.trade .full{grid-column:1/-1}
+form.trade input,form.trade select{height:46px;border-radius:12px;border:1px solid var(--line);background:var(--panel);padding:0 14px;outline:none;color:var(--fg);font-weight:500;width:100%}
+form.trade input:focus,form.trade select:focus{border-color:var(--gold)}
+form.trade .btn{height:52px}
+@media (max-width:880px){.sell .wrap{grid-template-columns:1fr}}
+@media (max-width:460px){form.trade{grid-template-columns:1fr}}
+
+footer{border-top:1px solid var(--line);padding-block:32px calc(32px + env(safe-area-inset-bottom,0px));color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+footer .soc{display:flex;gap:8px}
+
+/* ---------- compare tray ---------- */
+.tray{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translate(-50%,140%);z-index:55;background:var(--panel-2);border:1px solid #3a3640;border-radius:999px;padding:6px 6px 6px 10px;display:flex;align-items:center;gap:10px;box-shadow:0 20px 50px -10px rgba(0,0,0,.8);transition:transform .35s cubic-bezier(.2,.8,.2,1);max-width:calc(100% - 32px)}
+.tray.on{transform:translate(-50%,0)}
+.tray .thumbs{display:flex}
+.tray .thumbs img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--panel-2);margin-left:-8px}
+.tray .thumbs img:first-child{margin-left:0}
+.tray span{font-size:14px;white-space:nowrap}
+.tray .btn{height:40px}
+.wa-float{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:54;width:56px;height:56px;border-radius:50%;background:var(--wa);color:#05210f;display:grid;place-items:center;box-shadow:0 12px 30px -8px rgba(37,211,102,.55);transition:bottom .3s}
+body.tray-on .wa-float{bottom:calc(82px + env(safe-area-inset-bottom,0px))}
+
+/* ---------- detail dialog ---------- */
+dialog{border:0;padding:0;background:transparent;color:var(--fg);max-width:none;max-height:none;width:100%;height:100%}
+dialog::backdrop{background:rgba(5,5,6,.78);backdrop-filter:blur(4px)}
+.dlg{position:relative;margin:auto;width:min(1180px,calc(100% - 40px));max-height:calc(100% - 40px);top:20px;background:var(--panel);border:1px solid var(--line);border-radius:24px;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.dgal{background:#000;position:relative;display:flex;flex-direction:column;min-height:0;max-height:calc(100vh - 40px)}
+.dinfo>*{flex-shrink:0}
+.dgal .dots{display:none}
+.dmain{position:relative;flex:1;min-height:0;display:flex}
+.dmain .slides{flex:1}
+.dgal .nav{opacity:.85;display:grid;width:46px;height:46px;background:transparent;border:0;filter:drop-shadow(0 1px 3px rgba(0,0,0,.75)) drop-shadow(0 0 8px rgba(0,0,0,.35));transition:opacity .2s,transform .15s}
+.dgal .nav:hover{opacity:1;background:transparent}
+.dgal .nav svg{stroke-width:2.6}
+.dgal .nav:active{transform:translateY(-50%) scale(.92)}
+.dgal .nav.prev{left:14px}.dgal .nav.next{right:14px}
+.dgal .nav svg{width:30px;height:30px}
+.dgal .nav:disabled{opacity:0;pointer-events:none}
+.dcount{position:absolute;right:14px;bottom:12px;font-size:13px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.dgal .slides{flex:1;min-height:0}
+.dgal .slides img{object-fit:cover;object-position:50% 50%}
+.dthumbs{display:flex;gap:6px;padding:8px;background:#08070a;overflow-x:auto}
+.dthumbs button{flex:0 0 64px;height:64px;padding:0;border:2px solid transparent;border-radius:10px;overflow:hidden;background:none;opacity:.6}
+.dthumbs button.on{border-color:var(--gold);opacity:1}
+.dthumbs img{width:100%;height:100%;object-fit:cover}
+.dinfo{overflow:auto;padding:clamp(20px,3vw,34px);display:flex;flex-direction:column;gap:20px;max-height:calc(100vh - 40px)}
+.dclose{position:absolute;top:14px;right:14px;z-index:5;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:rgba(9,9,10,.8);display:grid;place-items:center}
+.dinfo h2{font-family:var(--display);font-weight:850;font-stretch:108%;font-size:clamp(26px,3vw,38px);line-height:1.02;margin:6px 0 0;letter-spacing:-.02em;text-wrap:balance}
+.dprice{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.dprice .price{font-size:clamp(28px,3vw,36px)}
+.dctas{display:flex;gap:8px;flex-wrap:wrap}
+.dctas .btn{flex:1 1 180px;height:50px}
+.sgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.sgrid div{background:var(--panel);padding:12px 14px;min-width:0}
+.sgrid div:last-child{grid-column:auto / -1}
+.sgrid dt{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.sgrid dd{margin:2px 0 0;font-weight:600;font-size:15px;overflow-wrap:anywhere}
+.dsec h3{font-family:var(--display);font-stretch:110%;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 10px;font-weight:700}
+.eq{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;padding:0;margin:0}
+.eq li{list-style:none;display:flex;gap:8px;font-size:14.5px;line-height:1.35}
+.eq li::before{content:"";flex:0 0 6px;height:6px;margin-top:7px;border-radius:50%;background:var(--gold)}
+.fin{background:var(--panel-2);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:14px}
+.fin-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.fin label{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted);font-weight:600;min-width:0}
+.fin input[type=range]{accent-color:var(--gold);width:100%}
+.fin input[type=number],.fin select{height:40px;border-radius:10px;border:1px solid var(--line);background:var(--panel);padding:0 10px;width:100%}
+.fin-out{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap}
+.fin-out b{font-family:var(--display);font-weight:800;font-size:28px}
+.fin small{color:var(--muted);font-size:12px;line-height:1.4}
+@media (max-width:880px){
+  .dlg{display:block;width:100%;max-height:100%;height:100%;top:0;border-radius:0;border:0;overflow:auto;padding-bottom:env(safe-area-inset-bottom,0px)}
+  .dgal{max-height:none}
+  .dmain{display:block}
+  .dgal .nav{width:40px;height:40px}
+  .dgal .nav.prev{left:10px}.dgal .nav.next{right:10px}
+  .dgal .slides{aspect-ratio:4/3.6;flex:none}
+  .dinfo{overflow:visible;max-height:none;padding-bottom:110px}
+  .dclose{top:calc(12px + env(safe-area-inset-top,0px))}
+  .dctas{position:fixed;left:0;right:0;bottom:0;z-index:4;background:rgba(19,19,21,.94);backdrop-filter:blur(10px);padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));border-top:1px solid var(--line)}
+  .dctas{flex-wrap:nowrap}
+  .dctas .btn{flex:1 1 0;padding:0 12px}
+  .dctas [data-share]{display:none}
+  .sgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .eq{grid-template-columns:1fr}
+}
+@media (max-width:460px){.fin-row{grid-template-columns:1fr 1fr}.fin-row label:first-child{grid-column:1/-1}}
+
+/* compare table */
+.cmp{width:100%;border-collapse:collapse;min-width:560px}
+.cmp th,.cmp td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:14.5px}
+.cmp th{color:var(--muted);font-weight:600;font-size:12px;letter-spacing:.1em;text-transform:uppercase;width:130px}
+.cmp td img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;margin-bottom:8px}
+.cmp .best{color:var(--gold);font-weight:700}
+.cmp-wrap{overflow-x:auto;padding:0 clamp(16px,3vw,28px) 24px}
+.dlg.single{display:block;width:min(1000px,calc(100% - 40px));overflow:auto}
+.dlg.single header{padding:clamp(20px,3vw,28px);padding-right:70px}
+.dlg.single h2{font-family:var(--display);font-weight:850;font-stretch:110%;font-size:30px;margin:6px 0 0}
+@media (max-width:880px){.dlg.single{width:100%}}
+[hidden]{display:none!important}
+html:has(dialog[open]){overflow:hidden}
+
+.badge.sold{background:var(--red);color:#fff}
+.card.sold .slides img{filter:grayscale(.55) brightness(.7)}
+.toast{position:fixed;left:50%;top:calc(80px + env(safe-area-inset-top,0px));transform:translate(-50%,-20px);background:var(--fg);color:var(--ink);padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;z-index:200;opacity:0;pointer-events:none;transition:all .25s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="#" aria-label="Auto Prime, inicio"><img src="assets/logo.webp" alt="Auto Prime" width="85" height="44"></a>
+    <label class="top-search">
+      <span class="sr">Buscar vehículo</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q-top" type="search" placeholder="Busca marca, modelo o año" autocomplete="off">
+    </label>
+    <a class="btn btn-wa" id="wa-top" target="_blank" rel="noopener">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.8zm0-21.6A11.8 11.8 0 0 0 1.9 18l-1.7 6 6.2-1.6A11.8 11.8 0 1 0 12 .2z"/></svg>
+      <span>Escríbenos</span>
+    </a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <div class="eyebrow" id="hero-eyebrow">Bucaramanga · Alta gama</div>
+        <h1 id="hero-title">Compramos y vendemos <em>carros que dan gusto manejar.</em></h1>
+        <p class="lead" id="hero-lead">Explora el inventario completo, compara modelos y escríbenos por WhatsApp. Recibimos tu carro como parte de pago.</p>
+        <label class="m-search">
+          <span class="sr">Buscar vehículo</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="q-m" type="search" placeholder="Busca marca, modelo o año" autocomplete="off" enterkeyhint="search">
+        </label>
+        <div class="hero-ctas">
+          <a class="btn btn-gold" href="#inventario">Ver inventario</a>
+          <a class="btn" href="#permuta">Vender o permutar</a>
+        </div>
+        <div class="stats">
+          <div><b class="num" id="st-total">29</b><span>vehículos</span></div>
+          <div><b class="num" id="st-brands">10</b><span>marcas</span></div>
+          <div><b class="num" id="st-new">1</b><span>para estrenar</span></div>
+        </div>
+      </div>
+      <article class="feature" id="feature" tabindex="0" aria-label="Ver vehículo destacado"></article>
+    </div>
+  </section>
+
+  <section class="inv" id="inventario">
+    <div class="wrap">
+      <div class="inv-head">
+        <div>
+          <div class="eyebrow" id="count">29 vehículos</div>
+          <h2>Inventario disponible</h2>
+        </div>
+        <div class="tools">
+          <button class="btn filters-btn" id="open-filters" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+            Filtros <span id="fcount"></span>
+          </button>
+          <label class="sr" for="sort">Ordenar</label>
+          <select class="select" id="sort">
+            <option value="feat">Destacados</option>
+            <option value="pa">Menor precio</option>
+            <option value="pd">Mayor precio</option>
+            <option value="yd">Más nuevos</option>
+            <option value="ka">Menor kilometraje</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="layout">
+        <aside class="filters" id="filters" aria-label="Filtros">
+          <div class="sheet-handle"></div>
+          <div class="sheet-head"><b>Filtrar</b><button class="clear" type="button" data-clear>Limpiar todo</button></div>
+          <div class="fgroup">
+            <h3><label for="q">Buscar</label></h3>
+            <input class="fsearch" id="q" type="search" placeholder="Ej: Hilux, híbrida, 2024" autocomplete="off">
+          </div>
+          <div class="fgroup"><h3>Marca</h3><div class="chips" id="f-brand"></div></div>
+          <div class="fgroup"><h3>Estado</h3><div class="chips" id="f-cond"></div></div>
+          <div class="fgroup"><h3>Precio</h3><div class="chips" id="f-price"></div></div>
+          <div class="fgroup"><h3>Tipo</h3><div class="chips" id="f-body"></div></div>
+          <div class="fgroup"><h3>Motor</h3><div class="chips" id="f-fuel"></div></div>
+          <button class="toggle" id="f-fav" type="button" aria-pressed="false"><span>Solo mis favoritos <small id="favn" style="color:var(--muted)"></small></span><i></i></button>
+          <div class="sheet-foot"><button class="btn" type="button" data-clear>Limpiar</button><button class="btn btn-gold" type="button" id="apply">Ver resultados</button></div>
+        </aside>
+
+        <div>
+          <div class="active-row" id="active"></div>
+          <div class="grid" id="grid" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sell" id="permuta">
+    <div class="wrap">
+      <div>
+        <div class="eyebrow">Vende o permuta</div>
+        <h2>Tu carro actual puede ser parte del pago.</h2>
+        <p>Recibimos tu vehículo como parte de pago. Cuéntanos qué tienes y un asesor te responde por WhatsApp con una oferta.</p>
+        <ol class="steps">
+          <li>Completa los datos de tu vehículo.</li>
+          <li>Envíalos por WhatsApp con un clic.</li>
+          <li>Recibe la valoración y agenda la revisión.</li>
+        </ol>
+      </div>
+      <form class="trade" id="trade">
+        <label>Marca<input id="t-brand" required placeholder="Ej: Toyota"></label>
+        <label>Modelo<input id="t-model" required placeholder="Ej: Prado TXL"></label>
+        <label>Año<input id="t-year" inputmode="numeric" required placeholder="2021"></label>
+        <label>Kilometraje<input id="t-km" inputmode="numeric" placeholder="45.000"></label>
+        <label class="full">Me interesa
+          <select id="t-want"><option value="">Solo quiero vender mi carro</option></select>
+        </label>
+        <button class="btn btn-wa full" type="submit">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#ico-wa"/></svg>
+          Enviar por WhatsApp
+        </button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><b style="color:var(--fg)">Auto Prime</b> · <span id="foot-city">Bucaramanga, Colombia</span> · <span class="num" id="foot-wa">+57 315 760 4949</span></div>
+    <div class="soc">
+      <a class="btn" id="lnk-ig" href="https://www.instagram.com/autoprime.col" target="_blank" rel="noopener">Instagram</a>
+      <a class="btn" id="lnk-tt" href="https://www.tiktok.com/@autoprime.col" target="_blank" rel="noopener">TikTok</a>
+      <a class="btn" id="lnk-fb" href="https://www.facebook.com/share/19fP6VYXXF/" target="_blank" rel="noopener">Facebook</a>
+    </div>
+  </div>
+</footer>
+
+<div class="tray" id="tray" role="region" aria-label="Comparador">
+  <div class="thumbs" id="tray-thumbs"></div>
+  <span id="tray-txt">0 de 3</span>
+  <button class="btn" type="button" id="tray-clear" aria-label="Vaciar comparador">✕</button>
+  <button class="btn btn-gold" type="button" id="tray-go">Comparar</button>
+</div>
+<a class="wa-float" id="wa-float" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><use href="#ico-wa"/></svg>
+</a>
+<div class="scrim" id="scrim"></div>
+<div class="toast" id="toast"></div>
+<dialog id="dlg" aria-label="Detalle del vehículo"></dialog>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ico-wa" viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.8zm0-21.6A11.8 11.8 0 0 0 1.9 18l-1.7 6 6.2-1.6A11.8 11.8 0 1 0 12 .2z"/></symbol>
+</svg>
+
+<script>
+let WA = "573157604949";
+const IMG = k => /^(data:|https?:)/.test(String(k)) ? k : `assets/${k}.webp`;
+const DEFAULT_CARS = [
+ {"id":1219,"b":"Toyota","m":"Sequoia TRD Pro Híbrida","y":2026,"p":499000000,"km":0,"f":"hybrid","hp":437,"dt":"4x4","body":"SUV","img":["KSFfOivhnOa-wIyN","Zk6c3TTP3xLOQh4-","zb3WYbWiOEGHXMSd","j1-YEkMYcivin18A","EbWs6_GKC9NIcElZ","n4DUApMGs7lPHhCf"],"eq":["i-FORCE MAX: V6 biturbo + motor eléctrico","Automática de 10 velocidades","Multi-Terrain Select","Bloqueo electrónico trasero","Rines forjados BBS de 18 pulgadas TRD Pro","Barra de luces LED","Protección TRD de aluminio","Techo panorámico","Asientos SofTex con calefacción y ventilación","Audio JBL premium","Pantalla táctil de 14 pulgadas","CarPlay y Android Auto inalámbricos"]},
+ {"id":1797,"b":"Toyota","m":"Land Cruiser 300 GR Sport","y":2024,"p":680000000,"km":27000,"f":"diesel","hp":309,"dt":"4x4","body":"SUV","img":["gprNIIuSp1mHYEon","ZGztNZXarAo14OPn","gWkNy8Vh8QEq-wMA","0vE6rOkUPH0M7_UP","P6iVbm9w2mnhs6YF","0N91ospv0ed6-Awx"],"eq":["Motor 3.3L V6 biturbo diésel de 700 Nm","Caja automática de 10 velocidades","Bloqueo de diferencial delantero y trasero","Suspensión E-KDSS exclusiva GR Sport","Detalles GR en exterior e interior","Volante deportivo GR","Tercera fila eléctrica"]},
+ {"id":1796,"b":"Toyota","m":"Sequoia Capstone Híbrida","y":2025,"p":459000000,"km":13000,"f":"hybrid","hp":437,"c":"Blanco perlado","body":"SUV","img":["cr39lh76HrmUbp_v","-vPk6_arvNGmGii4","c6fEoBijkss_kGq6","EftixsxLREiHZs3V","uzyYdkES86DEXDhM","irYYhphCNOi85Iym"],"eq":["Versión Capstone, la más alta de la gama","Suspensión neumática original Toyota","V6 biturbo híbrido i-FORCE MAX","Caja automática de 10 velocidades","Rines de 22 pulgadas","Asientos en cuero con masaje","Madera de nogal con iluminación Capstone","Estribos eléctricos","Pantalla de 14 pulgadas","Head-Up Display"]},
+ {"id":2000,"b":"Toyota","m":"Sequoia TRD Pro Híbrida","y":2024,"p":429000000,"km":24000,"f":"hybrid","hp":437,"dt":"4x4","c":"Blanco","body":"SUV","img":["5S8C90pQ8XIKxyXp","bLfiY57-IZJRk3f3","qGXdYR8z1pASvyq4","tjcgmSKT9Up-V6mZ","F-aZ6ItnmjDfEwek","nd8NURbloVHM3JMV"],"eq":["V6 twin-turbo híbrido i-FORCE MAX","Suspensión FOX con kit de altura","Rines BBS forjados de 18 pulgadas","Llantas Mickey Thompson","Escape deportivo TRD Pro","Cámara 360° y retrovisor digital","Sonido JBL con subwoofer","7 puestos en cuero, asientos eléctricos","Techo panorámico","Toyota Safety Sense"]},
+ {"id":1999,"b":"Toyota","m":"LC200 Sahara Executive Lounge","y":2019,"p":414000000,"km":65000,"f":"diesel","hp":235,"dt":"4x4","body":"SUV","armored":true,"img":["LevVBEbw8FAcMxH9","anhdvj3xpEFN3R8t","opBUcn1KBBs1hnfR","rMv2774E2FXqvS9b","hRRmWCnyne2KfgTY","qmB5OIRtv8gyZP4B"],"eq":["Blindaje 2+ con vidrios ultralivianos","Versión europea","Motor 4.5L V8 turbodiésel","Crawl Control y control de ascenso y descenso","Suspensión electroneumática","Rines de 20 pulgadas","8 puestos en cuero moca de fábrica","Nevera y pantallas en segunda fila","Sonido JBL Professional","Aire tri-zona","Sunroof","10 airbags"]},
+ {"id":1157,"b":"Toyota","m":"Fortuner SRV 2.4 Diésel","y":2022,"p":225000000,"km":90000,"f":"diesel","dt":"4x2","c":"Blanco","body":"SUV","img":["MeDkasKLOKHAs3D9","DwKZcQSLob4LnjRb","OlveDgGuuoD5djFq","-eXH4BAiwkKuHkZN","OPxFmSG0Jey2P-kt","4BpdUFA2EwyQdMQI"],"eq":["Único dueño","Cojinería en cuero","Sillas delanteras eléctricas","Sonido premium JBL","Levas de cambio en el volante","Cámaras 360°","Sensores de parqueo delanteros y traseros","Apertura eléctrica de baúl","Apple CarPlay y Android Auto","Climatizador dual + aire en 2ª y 3ª fila","Rines de 18 pulgadas","7 airbags"]},
+ {"id":2228,"b":"Toyota","m":"Fortuner 3.0 Turbo Diésel","y":2015,"p":149900000,"km":135000,"f":"diesel","dt":"4x4","body":"SUV","img":["yN4Uvx3Qv5nljzxf","0e-p4YJqF9gxr4zB","zpgU8EHXLkG5p-uS","MVWLMj-WIKQPX4Ev","4P6TadTX97ut8iEa","K4ZMKsE6MOO0FLFR"],"eq":["Motor 3.0 turbo diésel","Caja automática","Tracción 4x4"]},
+ {"id":1152,"b":"Toyota","m":"Prado TXL Diésel","y":2017,"p":213000000,"km":145000,"f":"diesel","c":"Blanco perlado","body":"SUV","img":["xvqvymMjsog4Zogu","YWIdKWSGQAzFOIwk","kxlPcd02I_K3AAh-","LRll53-f4lvWaDBJ","Mr-N6Z3K1cC150od","UCLcaFPlfDxgWZJs"],"eq":["Versión TXL","Segundo dueño","Pantalla tipo Tesla"]},
+ {"id":1218,"b":"Toyota","m":"4Runner SR5","y":2015,"p":149900000,"km":185000,"f":"gasoline","dt":"4x4","c":"Blanco","body":"SUV","img":["n_84deHKxgtcKZLP","zSNGySE5SJgo0dZN","4eD5xRZz2fytmhkr","rzuqY-J4KdvRLjnJ","odRZaFQcm3sGJNBs","cWL-EcFHDEUU6n18"],"eq":["Versión SR5","Motor 4.0L V6","Transmisión automática","Excelente capacidad 4x4","Interior amplio y confortable"]},
+ {"id":1997,"b":"Toyota","m":"Hilux SRX 2.8 Diésel","y":2025,"p":269000000,"km":41000,"f":"diesel","hp":204,"dt":"4x4","c":"Blanco","body":"Pick-up","img":["oUw7q6uJ-clYkbaF","WgaxakoHvx_N062W","A1wF09CrKcsG_Kpv","PdFN-bjXDU47tZi6","rede1sJS12djjjMu","NZ_1aVK5N725IPIl"],"eq":["Versión SRX, la más equipada","Motor 2.8L turbodiésel de 500 Nm","Bloqueo de diferencial trasero","3 modos de manejo","Sonido JBL con 8 parlantes y subwoofer","Cámara de visión 360°","Cuero con asientos delanteros eléctricos y ventilados","Climatizador bizona","Faros Bi-LED","Carga inalámbrica"]},
+ {"id":1799,"b":"Toyota","m":"Hilux SRX 2.8 Diésel","y":2022,"p":238000000,"km":80000,"f":"diesel","hp":204,"dt":"4x4","c":"Plateado","body":"Pick-up","img":["WYqZMY-hc6UyxPd3","EK4kUaD0W9HuX28u","Pi6xphct6x5Gy63X","bBzO5RQxl8K1cUDf","4Dcjk8A90Gq2SiWM","usOwK8598CNv2pYz"],"eq":["Único dueño, mantenimientos en concesionario","Motor 2.8L turbodiésel de 500 Nm","Caja automática de 6 velocidades","Bloqueo de diferencial trasero","Sonido JBL con 8 parlantes y subwoofer","Cámara de visión 360°","Llave de proximidad y encendido por botón","Climatizador bizona","Faros LED","Rines de 18 pulgadas"]},
+ {"id":1227,"b":"Toyota","m":"Hilux SRV 2.8 Diésel","y":2020,"p":212000000,"km":110000,"f":"diesel","body":"Pick-up","img":["kili0gp8YNhdFNQy","WmqYTd5CAOlLLIjH","BKcLjS4aDInUduF2","KRwKfpstqvBjMuC6","WB_RV7f8FzSFEkTB","9ee4Ov-UjAjYxnwm"],"eq":["Único dueño","Motor 2.8 diésel","Caja automática"]},
+ {"id":1798,"b":"Toyota","m":"Tacoma V6 3.5L","y":2021,"p":185000000,"km":50000,"f":"gasoline","dt":"4x2","c":"Gris","body":"Pick-up","img":["rt2US2RDr1hr-Ssc","BRJmdKeTt2Wdvied","YgAzpsiMlH4qfeh-","xklwU2aiTrz5L7qC","Y4wg_8HuHWpGIP8l","T-dTeG7BcHNykKyM"],"eq":["Motor 3.5L V6","Caja automática de 6 velocidades","Diferencial autoblocante","Toyota Safety Sense","Control de crucero adaptativo","Apple CarPlay y Android Auto","Cámara de reversa","Estribos laterales TRD","Tomacorriente de 120V en el platón"]},
+ {"id":1225,"b":"Lexus","m":"LX 570 Super Sport","y":2018,"p":395000000,"km":null,"f":"gasoline","dt":"4x4","c":"Negro","body":"SUV","img":["EniHduDMWMV4-GHZ","UPkx4EsgRHeFLV4b","EiCgl55Fix6uSXfg","-YT_F_7Uf-TrGHd7","NN-dswNJn3B4bAzT","5bp5Q-b_jo0rxd7v"],"eq":["Motor V8 5.7L","Suspensión neumática con altura regulable","Control crucero adaptativo","Cámara 360°","Sillas en cuero eléctricas, calefactables y ventiladas","Techo corredizo","Sonido premium","Portón trasero eléctrico"]},
+ {"id":1231,"b":"Mercedes-Benz","m":"GLE 450 Híbrida","y":2023,"p":269000000,"km":45000,"f":"hybrid","c":"Blanco","body":"SUV","img":["aN4k0Go_Jq4XjVbQ","ZhGmrRrDl6-_9wcG","qMdmecYnz1W8l5LX","7cWu3D4x8XrL5XSu","BKz4eNAw8bWSogru","XKYdNy_Zfhz0etj2"],"eq":["Paquete AMG","Rines de 22 pulgadas con Michelin nuevas","Juego extra de rines de 20 pulgadas","Motor 3.0, no tiene pico y placa","Cojinería eléctrica","Techo panorámico","Multimedia con manejo por gestos o voz","Garantía, vendida por concesionario"]},
+ {"id":2001,"b":"Mercedes-Benz","m":"AMG A35 4MATIC","y":2025,"p":185000000,"km":18500,"f":"hybrid","hp":306,"dt":"AWD","c":"Gris","body":"Deportivo","img":["ufXt1SezEdNtUr0A","ZDjM0e7E9H5mTYqj","ui4TG6GfxbZteGHj","rPtrEvre5HkezHR0","BonMqScOpGcbDiuo","BdZ-7S-Io8RwMyQb"],"eq":["Motor 2.0L turbo mild hybrid 48V","0 a 100 km/h en 4,7 s","Doble embrague de 7 velocidades","Pintura toda original, dos llaves","Garantía de fábrica","Asistente MBUX por voz","Asistente de frenado activo","Sillas con 3 memorias","Cargador inalámbrico"]},
+ {"id":1159,"b":"Mercedes-Benz","m":"CLA 200","y":2024,"p":154900000,"km":6000,"f":"gasoline","c":"Blanco","body":"Sedán","img":["Aejc9mwK1EaqGJSP","lJRIPiDERUO63EYP","r_Byn-qyAuYrpG0u","qkSO24gpDa7Hp8V2","eGVnRmTZiCloM-qT","f6Py4K2xkDH7zaIK"],"eq":["Motor 1.3 Turbo","Automática 7G-DCT","Pintura 100% original","Iluminación LED","MBUX con doble pantalla digital","Apple CarPlay y Android Auto","Volante multifunción"]},
+ {"id":2002,"b":"BMW","m":"M3 Competition G80","y":2022,"p":399000000,"km":19000,"f":"gasoline","hp":510,"dt":"RWD","c":"Gris nardo","body":"Deportivo","img":["8jam2JF_BS5b6WEJ","fNsD_2TU9d1YJ9E1","ibKgnuznOpJQWcAM","mAyeX27HFpffs8i6","_WD2J1_mFx_9yjod","xNdEg-wtWawu0-yk"],"eq":["Motor 3.0L TwinPower Turbo de 6 cilindros","0 a 100 km/h en 3,9 s","Suspensión M adaptativa","Escape adaptativo","Fibra de carbono en techo, alerón y bómpers","Sillas M Competition en carbono","Head-Up Display","Sonido Harman Kardon de 16 bocinas","Rines de 20 pulgadas pedido especial"]},
+ {"id":1232,"b":"BMW","m":"X6 xDrive40i M Sport","y":2023,"p":255000000,"km":20000,"f":"gasoline","hp":340,"dt":"AWD","body":"SUV","img":["D1hPo19EW4Ppagrz","JK0jmz3NUdH5iaOn","D6jdx8OsbcyRJqAJ","VI9Ms6O9tHKB5IrP","TEhy4lWGXLLxKxdJ","0g9VBiKEfVsS7bEB"],"eq":["Motor 3.0L TwinPower Turbo de 6 cilindros","Steptronic de 8 velocidades","0 a 100 km/h en 5,5 s","Paquete M Sport","Cojinería color terracota","BMW Live Cockpit Professional","Apple CarPlay y Android Auto","Sillas eléctricas con memoria","Portón trasero eléctrico"]},
+ {"id":1222,"b":"BMW","m":"X4 xDrive30i","y":2022,"p":182000000,"km":42000,"f":"gasoline","dt":"AWD","body":"SUV","img":["DcDA1Y6Io-Ldus2D","rQjKwGzcNcykCXXW","Vsx_H3dfYigBK3io","qxl1hMeUjpU6XBVC","JMoD0a-NFGr3gtar","7fG51bGxxZhcisLF"],"eq":["Motor 2.0 turbo","Steptronic automática","Interior en cuero rojo","Techo panorámico","Cámara y sensores de parqueo","Rines de lujo"]},
+ {"id":1233,"b":"BMW","m":"M240i Cabrio","y":2017,"p":139900000,"km":30000,"f":"gasoline","hp":340,"c":"Blanco","body":"Deportivo","img":["bL4Bttuas--zYnAN","3GJ-RMEZaZyZ16EG","io3-GQVpSnRW3QWx","uO0pYJKT5ro_4kxA","UJQ4r065I-tloOJY","g8PQXEubLpzDb6UD"],"eq":["Único dueño, pintura 100% original","Motor 3.0 TwinPower Turbo","Automática de 8 velocidades con levas","Capota de lona eléctrica","Asientos deportivos en cuero","Acceso y encendido sin llave","Sensores de parqueo y cámara de reversa","Faros Full LED"]},
+ {"id":1155,"b":"Ford","m":"Bronco","y":2025,"p":285000000,"km":20000,"f":"gasoline","hp":335,"dt":"4x4","body":"SUV","img":["SOzWErBtxCcXN5td","ddJT65aVL6mRdngT","QwfCRy9pzDg4VZyO","VtfXLlQgyw0jN66S","TZRd6GBRzJoBpjcG","QGYLR0_q2p-p8pU4"],"eq":["Mantenimientos en concesionario","Motor 2.7L V6 EcoBoost","Automática de 10 velocidades","G.O.A.T. Modes","Cámara 360°","Sonido B&O Premium","SYNC 4 con CarPlay y Android Auto","Ford Co-Pilot360","Puertas desmontables"]},
+ {"id":1996,"b":"Ford","m":"Bronco Wildtrak","y":2024,"p":275000000,"km":6500,"f":"gasoline","hp":330,"dt":"4x4","body":"SUV","img":["EwenPmOZVlVUJRdb","wwygd5Je5GQgmmfh","1FwaFpzuMvOe4RFe","okuilZzhjnIxfWYc","6TKBgxQTJVMA4hiY","YMhA2x0sJ4Xwaxik"],"eq":["Único dueño, pintura original","Se entregan todos los extras originales","V6 2.7L EcoBoost","Automática de 10 velocidades","Bloqueo diferencial delantero y trasero","Suspensión HOSS 3.0 con FOX","Audio B&O","Ford Co-Pilot360","Encendido remoto"]},
+ {"id":1156,"b":"Ford","m":"F-150 XLT Híbrida","y":2023,"p":250000000,"km":45000,"f":"hybrid","dt":"4x4","body":"Pick-up","armored":true,"img":["wLTqygwUO7x09nHP","0y4o-x7NxnJg1D_K","JFBWvaBuoPJv2rVQ","8KZcIJShGgcV54kn","PzUivrGYNP8ZFcOx","q12tCtGy40OWyYnS"],"eq":["Blindaje nivel II","V6 3.5L EcoBoost PowerBoost híbrido","Automática de 10 velocidades","Suspensión Rough Country","Cámara 360°","Sonido B&O Premium","SYNC 4 con CarPlay y Android Auto","Interior Orange original Ford","Pro Power Onboard en el platón"]},
+ {"id":1220,"b":"Renault","m":"Alaskan 2.5 Diésel","y":2023,"p":136000000,"km":63000,"f":"diesel","tr":"Mecánica","dt":"4x4","c":"Blanco","body":"Pick-up","img":["D2FMMCOXDNd6vwbr","Al8fK7FaPtZjCshM","338S8DLdIkQVh9ul","CdRfOCh0x-JG7zGq","42PsdT5cdM967ylN","5GMZ7sWu2Nf9avfo"],"eq":["Al día en mantenimientos","Llantas nuevas","Estribos","Carpa plana de platón"]},
+ {"id":1162,"b":"Mazda","m":"CX-30 Touring","y":2022,"p":89900000,"km":null,"f":"gasoline","body":"SUV","img":["5quvA353YgY-tryW","PMx9GJipLuL1qmk3","OsERvm07lAx2bV6h","mXfNi1BysAmLcig4","vjjZKzHbbXmkNaFn","nmJfSogiu8isJROW"],"eq":["Motor SKYACTIV-G 2.0L","Automática de 6 velocidades","Faros LED con luces automáticas","Mazda Connect con CarPlay y Android Auto","Cámara de reversa y sensores","Control crucero","Seguridad i-ACTIVSENSE"]},
+ {"id":2227,"b":"Kia","m":"Sportage Desire 2.0","y":2022,"p":92000000,"km":67000,"f":"gasoline","body":"SUV","img":["55-PWj0y-PSY3vkK","G8DUWGtbVIn4DDZZ","_2DZb536Izkq9ZE-","ecRbIhG1se8CLSdG","hKWWO5vb-PcssDHE","x2DNW63Z862iUhcn"],"eq":["Segundo dueño, pintura original","Caja automática","Cojinería en cuero","Cámara de reversa","Rines de lujo","Iluminación ambiental"]},
+ {"id":1217,"b":"Chevrolet","m":"Tracker Premier","y":2023,"p":74000000,"km":51000,"f":"gasoline","c":"Blanco","body":"SUV","img":["UQdKlsOM0kUiElCd","EB6CSRE_dcgVvHHx","YF09RryyMidpNufG","XmtPc-LglAx7yul9","_xks8MLPsn5hqUEj","m54Z0f2R7g2PqcWr"],"eq":["Mantenimientos en concesionario","Motor 1.2 Turbo","Versión Premier, tope de gama","Android Auto y Apple CarPlay","Sensores y cámara de reversa","Encendido push start"]},
+ {"id":1815,"b":"Honda","m":"X-ADV 745","y":2024,"p":64500000,"km":16000,"f":"gasoline","tr":"DCT doble embrague","body":"Moto","img":["6VZuGdbDJWwQ_nGp","DMtFUGOf1IusTk5v","5AUAMhKZyb6lVlJC","yajFt_TT04lX7-Ss","_ESnnjGf9sXXHKlw","rdEGE3Of21SGp7o8"],"eq":["Motor bicilíndrico de 745 cc","Exosto Leo Vince (se entrega el original)","Iluminación LED","Pantalla TFT digital","Control de tracción y modos de conducción","Encendido sin llave"]}
+];
+let CARS=[], BRANDS=[];
+
+const FUEL = {gasoline:"Gasolina",diesel:"Diésel",hybrid:"Híbrido",plug_in_hybrid:"Híbrido enchufable",electric:"Eléctrico"};
+const FUELF = {Gasolina:["gasoline"],"Diésel":["diesel"],"Híbrido":["hybrid","plug_in_hybrid"],"Eléctrico":["electric"]};
+const PRICES = [["Hasta $100 M",0,100e6],["$100 – 200 M",100e6,200e6],["$200 – 300 M",200e6,300e6],["$300 – 450 M",300e6,450e6],["Más de $450 M",450e6,1e12]];
+const $ = s => document.querySelector(s);
+const fmt = n => "$ " + Math.round(n).toLocaleString("es-CO");
+const short = n => n>=1e9 ? "$" + (n/1e9).toLocaleString("es-CO",{maximumFractionDigits:2}) + " mil M" : "$" + (n/1e6).toLocaleString("es-CO",{maximumFractionDigits:1}) + " M";
+const km = c => c.km==null ? null : c.km===0 ? "0 km" : c.km.toLocaleString("es-CO")+" km";
+const wa = txt => `https://wa.me/${WA}?text=${encodeURIComponent(txt)}`;
+const waCar = c => wa(`Hola Auto Prime, me interesa el ${c.name} publicado en ${fmt(c.p)}. ¿Sigue disponible?`);
+const store = {get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const ea = s => String(s??"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const clean = s => String(s??"").replace(/[<>]/g,"").trim();
+
+/* ---------- datos ---------- */
+const DEFAULTS = {
+  featured: 1219,
+  fin: {on:true, rate:1.5, dp:30, dpMin:10, term:60, terms:[12,24,36,48,60,72],
+        note:"Cálculo de referencia con la tasa que escribas. No es una oferta de crédito; las condiciones reales las confirma el asesor o la entidad financiera."},
+  cfg: {wa:"573157604949", city:"Bucaramanga", heroA:"Compramos y vendemos", heroB:"carros que dan gusto manejar.",
+        lead:"Explora el inventario completo, compara modelos y escríbenos por WhatsApp. Recibimos tu carro como parte de pago.",
+        ig:"https://www.instagram.com/autoprime.col", tt:"https://www.tiktok.com/@autoprime.col", featLabel:"Destacado"}
+};
+let DB = {cars:DEFAULT_CARS, ...DEFAULTS};
+function prep(){
+  DB.cars.forEach((c,i)=>{c.i=i; c.name=`${c.b} ${c.m} ${c.y}`});
+  CARS = DB.cars.filter(c=>!c.hidden);
+  BRANDS = [...new Set(CARS.map(c=>c.b))];
+}
+prep();
+
+const S = {q:"",brands:new Set(),cond:"all",price:null,body:new Set(),fuel:new Set(),fav:false,sort:"feat"};
+let favs = new Set(store.get("ap-favs",[]));
+let cmp = [];
+
+const ICON = {
+  heart:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.5-9.3C1.2 8.4 3.3 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.7 0 5.8 3.9 4.5 7.2C19.5 16.4 12 21 12 21z"/></svg>',
+  cmp:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v18M16 3v18M3 8h5M16 16h5"/></svg>',
+  wa:'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><use href="#ico-wa"/></svg>',
+  l:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="m15 18-6-6 6-6"/></svg>',
+  r:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="m9 18 6-6-6-6"/></svg>',
+  x:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  share:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14"/></svg>'
+};
+
+function badges(c){
+  let h="";
+  if(c.km===0) h+='<span class="badge new">0 km</span>';
+  if(c.f==="electric") h+='<span class="badge ev">Eléctrico</span>';
+  else if(c.f==="hybrid"||c.f==="plug_in_hybrid") h+='<span class="badge ev">Híbrido</span>';
+  if(c.armored) h+='<span class="badge arm">Blindado</span>';
+  if(c.sold) h='<span class="badge sold">Vendido</span>'+h;
+  return h;
+}
+function slides(c,cls=""){
+  return `<div class="slides ${cls}">${c.img.map((k,j)=>`<img src="${IMG(k)}" alt="${c.name}, foto ${j+1}" loading="${j?"lazy":"eager"}" decoding="async" draggable="false">`).join("")}</div>
+  <div class="dots">${c.img.map((_,j)=>`<i class="${j?"":"on"}"></i>`).join("")}</div>`;
+}
+function wireSlides(root){
+  const sl=root.querySelector(".slides"), dots=[...root.querySelectorAll(".dots i")];
+  if(!sl) return;
+  sl.addEventListener("scroll",()=>{const k=Math.round(sl.scrollLeft/sl.clientWidth);dots.forEach((d,j)=>d.classList.toggle("on",j===k));root.dispatchEvent(new CustomEvent("slide",{detail:k}))},{passive:true});
+  root.querySelectorAll(".nav").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();sl.scrollBy({left:(b.classList.contains("next")?1:-1)*sl.clientWidth,behavior:"smooth"})}));
+}
+
+/* ---------- feature + stats + rails ---------- */
+function renderFeature(){
+  const c=DB.featured!=null?CARS.find(x=>x.id===DB.featured):null;
+  $("#feature").hidden=!c;
+  if(c){
+  const tag=[DB.cfg.featLabel, c.km===0?"0 km":null].filter(Boolean).join(" · ");
+  const meta=[c.hp&&c.hp+" hp", c.dt, c.c].filter(Boolean).join(" · ");
+  $("#feature").innerHTML=`<img src="${IMG(c.img[0])}" alt="${c.name}">${tag?`<span class="badge new tag">${tag}</span>`:""}
+  <div class="shade"><div class="eyebrow">${c.b} · ${c.y}</div><h2>${c.m}</h2>
+  <div class="row"><div><div class="price num">${fmt(c.p)}</div><div class="meta">${meta}</div></div><span class="btn btn-gold" style="height:42px">Ver detalles</span></div></div>`;
+  }
+  const open=()=>c&&openCar(c.id);
+  $("#feature").onclick=open; $("#feature").onkeydown=e=>{if(e.key==="Enter")open()};
+  $("#st-total").textContent=CARS.length;
+  $("#st-brands").textContent=new Set(CARS.map(c=>c.b)).size;
+  $("#st-new").textContent=CARS.filter(c=>c.km===0).length;
+}
+function chipGroup(el,items,isOn,onClick){
+  el.innerHTML=items.map((it,j)=>`<button type="button" class="chip" data-j="${j}" aria-pressed="${isOn(it)}">${it.label}</button>`).join("");
+  el.querySelectorAll("button").forEach(b=>b.onclick=()=>{onClick(items[b.dataset.j]);render()});
+}
+function renderFilters(){
+  chipGroup($("#f-brand"),BRANDS.map(b=>({label:b,v:b})),it=>S.brands.has(it.v),it=>S.brands.has(it.v)?S.brands.delete(it.v):S.brands.add(it.v));
+  chipGroup($("#f-cond"),[{label:"Todos",v:"all"},{label:"0 km",v:"new"},{label:"Usados",v:"used"}],it=>S.cond===it.v,it=>S.cond=it.v);
+  chipGroup($("#f-price"),PRICES.map((p,j)=>({label:p[0],v:j})),it=>S.price===it.v,it=>S.price=S.price===it.v?null:it.v);
+  chipGroup($("#f-body"),[...new Set(CARS.map(c=>c.body))].map(b=>({label:b,v:b})),it=>S.body.has(it.v),it=>S.body.has(it.v)?S.body.delete(it.v):S.body.add(it.v));
+  chipGroup($("#f-fuel"),Object.keys(FUELF).map(f=>({label:f,v:f})),it=>S.fuel.has(it.v),it=>S.fuel.has(it.v)?S.fuel.delete(it.v):S.fuel.add(it.v));
+  $("#f-fav").setAttribute("aria-pressed",S.fav);
+  $("#favn").textContent=favs.size?`(${favs.size})`:"";
+}
+
+/* ---------- filtering ---------- */
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+function filtered(){
+  const terms=norm(S.q).split(/\s+/).filter(Boolean);
+  let list=CARS.filter(c=>{
+    const hay=norm(`${c.name} ${c.body} ${FUEL[c.f]||""} ${c.c||""} ${c.armored?"blindado blindada":""}`);
+    if(terms.some(t=>!hay.includes(t))) return false;
+    if(S.brands.size&&!S.brands.has(c.b)) return false;
+    if(S.cond==="new"&&c.km!==0) return false;
+    if(S.cond==="used"&&!(c.km>0)) return false;
+    if(S.price!=null){const [,a,b]=PRICES[S.price]; if(c.p<a||c.p>=b) return false;}
+    if(S.body.size&&!S.body.has(c.body)) return false;
+    if(S.fuel.size&&![...S.fuel].some(f=>FUELF[f].includes(c.f))) return false;
+    if(S.fav&&!favs.has(c.id)) return false;
+    return true;
+  });
+  const k={feat:(a,b)=>a.i-b.i,pa:(a,b)=>a.p-b.p,pd:(a,b)=>b.p-a.p,yd:(a,b)=>b.y-a.y||a.p-b.p,ka:(a,b)=>(a.km??1e9)-(b.km??1e9)}[S.sort];
+  return list.sort(k);
+}
+function activeCount(){return S.brands.size+S.body.size+S.fuel.size+(S.cond!=="all")+(S.price!=null)+(S.fav?1:0)+(S.q?1:0)}
+
+function renderActive(){
+  const pills=[];
+  if(S.q) pills.push([`“${S.q}”`,()=>{S.q="";$("#q").value="";$("#q-top").value="";$("#q-m").value=""}]);
+  S.brands.forEach(b=>pills.push([b,()=>S.brands.delete(b)]));
+  if(S.cond!=="all") pills.push([S.cond==="new"?"0 km":"Usados",()=>S.cond="all"]);
+  if(S.price!=null) pills.push([PRICES[S.price][0],()=>S.price=null]);
+  S.body.forEach(b=>pills.push([b,()=>S.body.delete(b)]));
+  S.fuel.forEach(f=>pills.push([f,()=>S.fuel.delete(f)]));
+  if(S.fav) pills.push(["Favoritos",()=>S.fav=false]);
+  const el=$("#active");
+  el.innerHTML=pills.map((p,j)=>`<button type="button" class="pill-x" data-j="${j}">${p[0]} ${ICON.x}</button>`).join("")+(pills.length?'<button class="clear" type="button" data-clear>Limpiar filtros</button>':"");
+  el.querySelectorAll(".pill-x").forEach(b=>b.onclick=()=>{pills[b.dataset.j][1]();render()});
+  el.querySelectorAll("[data-clear]").forEach(b=>b.onclick=clearAll);
+  const n=activeCount(); $("#fcount").textContent=n?`(${n})`:"";
+}
+
+function card(c,j){
+  const spec=[c.y, km(c), FUEL[c.f]||c.tr, c.hp?c.hp+" hp":null].filter(Boolean);
+  return `<article class="card${c.sold?" sold":""}" data-id="${c.id}" style="animation-delay:${Math.min(j,8)*40}ms" tabindex="0" aria-label="${c.name}, ${fmt(c.p)}">
+    <div class="media">${slides(c)}
+      <button class="nav prev" type="button" aria-label="Foto anterior">${ICON.l}</button><button class="nav next" type="button" aria-label="Foto siguiente">${ICON.r}</button>
+      <div class="badges">${badges(c)}</div>
+      <button class="fav" type="button" data-fav aria-pressed="${favs.has(c.id)}" aria-label="Guardar en favoritos">${ICON.heart}</button>
+    </div>
+    <div class="cbody">
+      <div class="cbrand"><span>${c.b}</span><span>${c.body}</span></div>
+      <h3 class="cname">${c.m}</h3>
+      <div class="specs num">${spec.map(s=>`<span>${s}</span>`).join("<span aria-hidden='true'>·</span>")}</div>
+      <div class="cfoot">
+        <div class="price num">${fmt(c.p)}</div>
+        <div class="cact">
+          <button class="icon-btn" type="button" data-cmp aria-pressed="${cmp.includes(c.id)}" aria-label="Agregar al comparador" title="Comparar">${ICON.cmp}</button>
+          <a class="icon-btn wa" href="${waCar(c)}" target="_blank" rel="noopener" data-wa aria-label="Preguntar por WhatsApp">${ICON.wa}</a>
+        </div>
+      </div>
+    </div>
+  </article>`;
+}
+
+function render(){
+  const list=filtered();
+  $("#count").textContent=`${list.length} ${list.length===1?"vehículo":"vehículos"}`;
+  $("#apply").textContent=`Ver ${list.length} ${list.length===1?"resultado":"resultados"}`;
+  const g=$("#grid");
+  g.innerHTML=list.length?list.map(card).join(""):`<div class="empty"><b>No hay vehículos con esos filtros</b>Prueba quitando alguno, o escríbenos: conseguimos el carro que buscas.<div style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn" type="button" data-clear>Limpiar filtros</button><a class="btn btn-wa" target="_blank" rel="noopener" href="${wa("Hola Auto Prime, estoy buscando un vehículo que no encontré en el catálogo:")}">Pedir un vehículo</a></div></div>`;
+  g.querySelectorAll(".card").forEach(el=>{
+    const id=+el.dataset.id;
+    wireSlides(el);
+    el.onclick=e=>{ if(e.target.closest("[data-fav],[data-cmp],[data-wa],.nav")) return; openCar(id) };
+    el.onkeydown=e=>{ if(e.key==="Enter"&&e.target===el) openCar(id) };
+    el.querySelector("[data-fav]").onclick=e=>{toggleFav(id);e.currentTarget.setAttribute("aria-pressed",favs.has(id))};
+    el.querySelector("[data-cmp]").onclick=e=>{toggleCmp(id)};
+  });
+  g.querySelectorAll("[data-clear]").forEach(b=>b.onclick=clearAll);
+  renderFilters(); renderActive();
+}
+function clearAll(){S.q="";S.brands.clear();S.cond="all";S.price=null;S.body.clear();S.fuel.clear();S.fav=false;$("#q").value="";$("#q-top").value="";$("#q-m").value="";render()}
+
+/* ---------- favs + compare ---------- */
+const TOAST=document.getElementById("toast");
+function toast(t){const el=TOAST;const host=dlg.open?dlg:document.body;if(el.parentNode!==host)host.appendChild(el);el.textContent=t;el.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove("on"),1800)}
+function toggleFav(id){favs.has(id)?favs.delete(id):(favs.add(id),toast("Guardado en favoritos"));store.set("ap-favs",[...favs]);$("#favn").textContent=favs.size?`(${favs.size})`:"";if(S.fav)render()}
+function toggleCmp(id){
+  if(cmp.includes(id)) cmp=cmp.filter(x=>x!==id);
+  else { if(cmp.length>=3){toast("Puedes comparar hasta 3 vehículos");return} cmp.push(id) }
+  document.querySelectorAll(`.card [data-cmp]`).forEach(b=>b.setAttribute("aria-pressed",cmp.includes(+b.closest(".card").dataset.id)));
+  renderTray();
+}
+function renderTray(){
+  const on=cmp.length>0;
+  $("#tray").classList.toggle("on",on); document.body.classList.toggle("tray-on",on);
+  $("#tray-thumbs").innerHTML=cmp.map(id=>{const c=CARS.find(x=>x.id===id);return `<img src="${IMG(c.img[0])}" alt="${c.name}">`}).join("");
+  $("#tray-txt").textContent=cmp.length<2?`${cmp.length} de 3 · agrega otro`:`${cmp.length} de 3`;
+  $("#tray-go").disabled=cmp.length<2; $("#tray-go").style.opacity=cmp.length<2?.5:1;
+}
+$("#tray-clear").onclick=()=>{cmp=[];render();renderTray()};
+$("#tray-go").onclick=openCompare;
+
+/* ---------- dialogs ---------- */
+const dlg=$("#dlg");
+function closeDlg(){dlg.close()}
+dlg.addEventListener("click",e=>{if(e.target===dlg)closeDlg()});
+dlg.addEventListener("close",()=>{if(location.hash.startsWith("#v"))history.replaceState(null,"",location.pathname+location.search);document.body.style.overflow=""});
+function showDlg(html){dlg.innerHTML=html;dlg.querySelector(".dclose").onclick=closeDlg;if(!dlg.open)dlg.showModal();document.body.style.overflow="hidden";const x=dlg.querySelector(".dclose");x.focus({preventScroll:true});dlg.querySelectorAll(".dlg,.dinfo").forEach(s=>s.scrollTop=0);requestAnimationFrame(()=>dlg.querySelectorAll(".dlg,.dinfo").forEach(s=>s.scrollTop=0))}
+
+function openCar(id){
+  const c=CARS.find(x=>x.id===id); if(!c) return;
+  history.replaceState(null,"",`#v${c.id}`);
+  const rows=[["Año",c.y],["Kilometraje",km(c)],["Transmisión",c.tr||"Automática"],["Motor",FUEL[c.f]],["Potencia",c.hp&&c.hp+" hp"],["Tracción",c.dt],["Color",c.c],["Tipo",c.body],["Ubicación",DB.cfg.city]].filter(r=>r[1]!=null&&r[1]!=="");
+  const F={...DB.fin, terms:[...DB.fin.terms].sort((a,b)=>a-b)};
+  const similar=CARS.filter(x=>x.id!==c.id&&(x.body===c.body)).sort((a,b)=>Math.abs(a.p-c.p)-Math.abs(b.p-c.p)).slice(0,3);
+  showDlg(`<div class="dlg">
+    <button class="dclose" type="button" aria-label="Cerrar">${ICON.x}</button>
+    <div class="dgal">
+      <div class="dmain">${slides(c)}
+        <button class="nav prev" type="button" aria-label="Foto anterior">${ICON.l}</button>
+        <button class="nav next" type="button" aria-label="Foto siguiente">${ICON.r}</button>
+        <span class="dcount num">1 / ${c.img.length}</span>
+      </div>
+      <div class="dthumbs">${c.img.map((k,j)=>`<button type="button" class="${j?"":"on"}" data-j="${j}" aria-label="Ver foto ${j+1}"><img src="${IMG(k)}" alt=""></button>`).join("")}</div>
+      <div class="badges">${badges(c)}</div>
+    </div>
+    <div class="dinfo">
+      <div>
+        <div class="eyebrow">${c.b} · ${c.y}</div>
+        <h2>${c.m}</h2>
+      </div>
+      <div class="dprice"><div class="price num">${fmt(c.p)}</div><span style="color:var(--muted);font-size:14px">COP · Recibimos tu carro en parte de pago</span></div>
+      <div class="dctas">
+        <a class="btn btn-wa" href="${waCar(c)}" target="_blank" rel="noopener">${ICON.wa} Me interesa</a>
+        <a class="btn" href="${wa(`Hola Auto Prime, quiero agendar una visita para ver el ${c.name}.`)}" target="_blank" rel="noopener">Agendar visita</a>
+        <button class="icon-btn" type="button" data-fav aria-pressed="${favs.has(c.id)}" aria-label="Guardar en favoritos" style="width:50px;height:50px">${ICON.heart}</button>
+        <button class="icon-btn" type="button" data-share aria-label="Copiar enlace" style="width:50px;height:50px">${ICON.share}</button>
+      </div>
+      <dl class="sgrid num" style="margin:0">${rows.map(r=>`<div><dt>${r[0]}</dt><dd>${r[1]}</dd></div>`).join("")}</dl>
+      ${c.eq.length?`<div class="dsec"><h3>Equipamiento destacado</h3><ul class="eq">${c.eq.map(e=>`<li>${e}</li>`).join("")}</ul></div>`:""}
+      ${F.on&&!c.sold?`<div class="dsec"><h3>Simula tu cuota</h3>
+        <div class="fin">
+          <div class="fin-row">
+            <label>Cuota inicial <span class="num" id="fi-dp-l"></span><input type="range" id="fi-dp" min="${F.dpMin}" max="90" step="5" value="${Math.max(F.dp,F.dpMin)}"></label>
+            <label>Plazo<select id="fi-n">${F.terms.map(n=>`<option value="${n}" ${n===F.term?"selected":""}>${n} meses</option>`).join("")}</select></label>
+            <label>Tasa mes vencido %<input type="number" id="fi-r" step="0.05" min="0" value="${F.rate}"></label>
+          </div>
+          <div class="fin-out"><div><small>Cuota mensual estimada</small><br><b class="num" id="fi-out"></b></div><div style="text-align:right"><small>Inicial <span class="num" id="fi-dp-v"></span><br>Financias <span class="num" id="fi-l"></span></small></div></div>
+          <small>${ea(F.note)}</small>
+        </div>
+      </div>`:""}
+      ${similar.length?`<div class="dsec"><h3>También te puede interesar</h3><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">${similar.map(s=>`<button type="button" data-sim="${s.id}" style="background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:0;overflow:hidden;text-align:left"><img src="${IMG(s.img[0])}" alt="" style="aspect-ratio:4/3;object-fit:cover;width:100%"><div style="padding:8px 10px;font-size:13px;line-height:1.3"><b style="display:block">${s.b} ${s.m}</b><span class="num" style="color:var(--muted)">${short(s.p)}</span></div></button>`).join("")}</div></div>`:""}
+    </div>
+  </div>`);
+  const gal=dlg.querySelector(".dgal"), sl=gal.querySelector(".slides"), th=[...gal.querySelectorAll(".dthumbs button")];
+  wireSlides(gal);
+  const prev=gal.querySelector(".nav.prev"), next=gal.querySelector(".nav.next"), cnt=gal.querySelector(".dcount");
+  const sync=k=>{th.forEach((b,j)=>b.classList.toggle("on",j===k));prev.disabled=k<=0;next.disabled=k>=c.img.length-1;cnt.textContent=`${k+1} / ${c.img.length}`};
+  gal.addEventListener("slide",e=>sync(e.detail)); sync(0);
+  dlg.onkeydown=e=>{if(e.target.closest("input,select"))return;if(e.key==="ArrowRight")next.click();if(e.key==="ArrowLeft")prev.click()};
+  th.forEach(b=>b.onclick=()=>sl.scrollTo({left:b.dataset.j*sl.clientWidth,behavior:"smooth"}));
+  dlg.querySelector("[data-fav]").onclick=e=>{toggleFav(c.id);e.currentTarget.setAttribute("aria-pressed",favs.has(c.id));render()};
+  dlg.querySelector("[data-share]").onclick=async()=>{const u=location.href.split("#")[0]+`#v${c.id}`;try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch{toast(u)}};
+  dlg.querySelectorAll("[data-sim]").forEach(b=>b.onclick=()=>openCar(+b.dataset.sim));
+  const calc=()=>{
+    const dp=+$("#fi-dp").value/100, n=+$("#fi-n").value, r=Math.max(0,+$("#fi-r").value||0)/100, L=c.p*(1-dp);
+    const q=r?L*r/(1-Math.pow(1+r,-n)):L/n;
+    $("#fi-dp-l").textContent=Math.round(dp*100)+"%"; $("#fi-dp-v").textContent=short(c.p*dp); $("#fi-l").textContent=short(L); $("#fi-out").textContent=fmt(q);
+  };
+  if($("#fi-dp")){["fi-dp","fi-n","fi-r"].forEach(id=>$("#"+id).addEventListener("input",calc)); calc();}
+}
+
+function openCompare(){
+  const L=cmp.map(id=>CARS.find(x=>x.id===id));
+  const minP=Math.min(...L.map(c=>c.p)), maxY=Math.max(...L.map(c=>c.y)), maxHp=Math.max(...L.map(c=>c.hp||0));
+  const kms=L.map(c=>c.km).filter(v=>v!=null), minKm=kms.length?Math.min(...kms):null;
+  const row=(lab,f,best)=>`<tr><th>${lab}</th>${L.map(c=>`<td class="num ${best&&best(c)?"best":""}">${f(c)??"—"}</td>`).join("")}</tr>`;
+  showDlg(`<div class="dlg single">
+    <button class="dclose" type="button" aria-label="Cerrar">${ICON.x}</button>
+    <header><div class="eyebrow">Comparador</div><h2>${L.length} vehículos lado a lado</h2></header>
+    <div class="cmp-wrap"><table class="cmp">
+      <tr><th></th>${L.map(c=>`<td><img src="${IMG(c.img[0])}" alt=""><b style="font-family:var(--display);font-size:17px">${c.b} ${c.m}</b></td>`).join("")}</tr>
+      ${row("Precio",c=>fmt(c.p),c=>c.p===minP)}
+      ${row("Año",c=>c.y,c=>c.y===maxY)}
+      ${row("Kilometraje",km,c=>c.km===minKm)}
+      ${row("Potencia",c=>c.hp&&c.hp+" hp",c=>c.hp&&c.hp===maxHp)}
+      ${row("Motor",c=>FUEL[c.f])}
+      ${row("Tracción",c=>c.dt)}
+      ${row("Tipo",c=>c.body)}
+      ${row("Color",c=>c.c)}
+      <tr><th></th>${L.map(c=>`<td><a class="btn btn-wa" style="width:100%;height:42px" href="${waCar(c)}" target="_blank" rel="noopener">${ICON.wa} Me interesa</a></td>`).join("")}</tr>
+    </table></div>
+    <p style="padding:0 clamp(16px,3vw,28px) 24px;margin:0;color:var(--muted);font-size:13px">Resaltado, el mejor valor de cada fila.</p>
+  </div>`);
+}
+
+/* ---------- inputs ---------- */
+let qt;
+function setQ(v,src){S.q=v.trim();if(src!=="q")$("#q").value=v;if(src!=="top")$("#q-top").value=v;if(src!=="m")$("#q-m").value=v;clearTimeout(qt);qt=setTimeout(render,120)}
+$("#q-m").addEventListener("input",e=>setQ(e.target.value,"m"));
+$("#q-m").addEventListener("keydown",e=>{if(e.key==="Enter"){e.target.blur();document.getElementById("inventario").scrollIntoView({behavior:"smooth"})}});
+$("#q").addEventListener("input",e=>setQ(e.target.value,"q"));
+$("#q-top").addEventListener("input",e=>setQ(e.target.value,"top"));
+$("#q-top").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("inventario").scrollIntoView({behavior:"smooth"})});
+$("#sort").onchange=e=>{S.sort=e.target.value;render()};
+$("#f-fav").onclick=()=>{S.fav=!S.fav;render()};
+document.querySelectorAll("aside [data-clear]").forEach(b=>b.onclick=clearAll);
+const sheet=(on)=>{$("#filters").classList.toggle("open",on);$("#scrim").classList.toggle("on",on);document.body.style.overflow=on?"hidden":""};
+$("#open-filters").onclick=()=>sheet(true);
+$("#apply").onclick=()=>{sheet(false);document.getElementById("inventario").scrollIntoView({behavior:"smooth"})};
+$("#scrim").onclick=()=>sheet(false);
+
+function applyCfg(){
+  const g=DB.cfg; WA=String(g.wa).replace(/\D/g,"");
+  $("#hero-eyebrow").textContent=`${g.city} · Carros y motos`;
+  $("#hero-title").innerHTML=`${ea(g.heroA)} <em>${ea(g.heroB)}</em>`;
+  $("#hero-lead").textContent=g.lead;
+  $("#foot-city").textContent=`${g.city}, Colombia`;
+  $("#foot-wa").textContent=WA.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})$/,"+$1 $2 $3 $4");
+  [["#lnk-ig",g.ig],["#lnk-tt",g.tt]].forEach(([s,u])=>{$(s).href=u||"#";$(s).hidden=!u});
+  const general=wa("Hola Auto Prime, vi su catálogo y quiero más información.");
+  $("#wa-top").href=general; $("#wa-float").href=general;
+  $("#t-want").innerHTML='<option value="">Solo quiero vender mi carro</option>'+CARS.filter(c=>!c.sold).map(c=>`<option value="${c.id}">${c.name} · ${short(c.p)}</option>`).join("");
+}
+$("#trade").addEventListener("submit",e=>{
+  e.preventDefault();
+  const v=id=>$(id).value.trim(), want=CARS.find(c=>c.id==$("#t-want").value);
+  let t=`Hola Auto Prime, quiero ${want?"permutar":"vender"} mi carro:\n• ${v("#t-brand")} ${v("#t-model")} ${v("#t-year")}`+(v("#t-km")?`\n• ${v("#t-km")} km`:"");
+  if(want) t+=`\nMe interesa el ${want.name} (${fmt(want.p)}).`;
+  window.open(wa(t),"_blank","noopener");
+});
+
+function openFromHash(){ const h=location.hash.match(/^#v(\d+)$/); if(h) openCar(+h[1]) }
+applyCfg(); renderFeature(); render(); renderTray(); openFromHash();
+</script>
+</body>
+</html>
