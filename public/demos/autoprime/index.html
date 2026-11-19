@@ -320,7 +320,7 @@ html:has(dialog[open]){overflow:hidden}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 /* ================= Impronta Auto Prime =================
    Garage / motorsport: negro, cromo y el verde lima de la franja racing de su banner.
-   Tipografía técnica (Saira), formas angulares, héroe a pantalla completa con el destacado
+   Tipografía técnica (Saira), formas angulares, destacado en tarjeta con placa de detalle
    y una franja de marcas en movimiento. Se aplica encima de la base de la vitrina. */
 :root{
   --gold:#c8f031;                 /* lima racing */
@@ -367,31 +367,23 @@ header.top::after{content:"";position:absolute;left:0;bottom:-2px;height:2px;wid
 .stats>div{padding:0 clamp(16px,2.4vw,30px);border-left:2px solid var(--gold)}
 .stats>div+div{border-left-color:var(--line)}
 
-/* héroe a pantalla completa: el destacado es el fondo */
-.hero{min-height:min(86vh,820px);display:flex;align-items:flex-end;padding-block:clamp(90px,14vh,160px) clamp(36px,6vh,64px)}
-.hero::before{display:none}
-.hero .wrap{position:static;display:block;width:100%}
-.hero .wrap>div:first-child{position:relative;z-index:2;max-width:640px;pointer-events:none}
-.hero .wrap>div:first-child a,.hero .wrap>div:first-child label{pointer-events:auto}
+/* héroe partido: texto a la izquierda, destacado como tarjeta con placa de detalle */
+.hero::before{background:radial-gradient(closest-side,rgba(200,240,49,.08),transparent 70%)}
 .hero .lead{color:#c9ccd2}
-.feature{position:absolute;inset:0;z-index:1;border-radius:0;border:0;aspect-ratio:auto;background:#000}
-.feature img{object-position:60% 55%;filter:saturate(.9) contrast(1.05)}
-.feature::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(90deg,rgba(9,9,10,.96) 0%,rgba(9,9,10,.82) 32%,rgba(9,9,10,.15) 62%,rgba(9,9,10,.35) 100%),
-             linear-gradient(0deg,var(--ink) 0%,transparent 28%)}
-.feature .tag{top:auto;left:auto;right:clamp(16px,4vw,48px);bottom:calc(clamp(36px,6vh,64px) + 168px);z-index:2}
-.feature .shade{z-index:2;left:auto;right:clamp(16px,4vw,48px);bottom:clamp(36px,6vh,64px);width:min(360px,40vw);
+.feature{border-radius:3px;border:1px solid var(--line);aspect-ratio:4/4.1;background:#000}
+.feature::before{content:"";position:absolute;left:0;top:0;width:38%;height:3px;background:var(--gold);z-index:2}
+.feature::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,rgba(9,9,10,.55) 0%,transparent 45%)}
+.feature .tag{z-index:2}
+.feature .shade{z-index:2;left:18px;right:18px;bottom:18px;width:auto;
   padding:18px 20px;background:rgba(9,9,10,.74);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   border-left:3px solid var(--gold)}
 .feature .shade .eyebrow::before{display:none}
 .feature .price{color:var(--fg)}
 @media (max-width:880px){
-  .hero{min-height:0;display:block;padding-block:26px 0}
-  .hero .wrap>div:first-child{max-width:none}
-  .feature{position:relative;inset:auto;aspect-ratio:4/3.3;margin-top:26px;border-radius:3px}
-  .feature::after{background:linear-gradient(0deg,rgba(9,9,10,.9) 0%,transparent 45%)}
-  .feature .shade{left:16px;right:16px;bottom:16px;width:auto}
-  .feature .tag{top:16px;left:16px;right:auto;bottom:auto}
+  .feature{aspect-ratio:auto;display:flex;flex-direction:column}
+  .feature img{height:auto;aspect-ratio:4/3}
+  .feature::after{display:none}
+  .feature .shade{position:relative;inset:auto;padding:16px 18px;background:var(--panel);backdrop-filter:none;-webkit-backdrop-filter:none}
   .stats>div:first-child{padding-left:14px}
 }
 
