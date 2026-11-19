@@ -7,7 +7,7 @@
 <meta name="description" content="Auto Prime, Bucaramanga: compramos y vendemos carros. Inventario completo, comparador y simulador de cuota.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira:wdth,wght@50..125,400..900&family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
 /* Auto Prime. Layout: vitrina nocturna. Encabezado fijo, héroe partido con el auto destacado,
    inventario con filtros laterales en PC y hoja inferior en mobile. */
@@ -318,6 +318,110 @@ html:has(dialog[open]){overflow:hidden}
 .card.sold .slides img{filter:grayscale(.55) brightness(.7)}
 .toast{position:fixed;left:50%;top:calc(80px + env(safe-area-inset-top,0px));transform:translate(-50%,-20px);background:var(--fg);color:var(--ink);padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;z-index:200;opacity:0;pointer-events:none;transition:all .25s}
 .toast.on{opacity:1;transform:translate(-50%,0)}
+/* ================= Impronta Auto Prime =================
+   Garage / motorsport: negro, cromo y el verde lima de la franja racing de su banner.
+   Tipografía técnica (Saira), formas angulares, héroe a pantalla completa con el destacado
+   y una franja de marcas en movimiento. Se aplica encima de la base de la vitrina. */
+:root{
+  --gold:#c8f031;                 /* lima racing */
+  --gold-soft:rgba(200,240,49,.12);
+  --chrome:linear-gradient(180deg,#f4f5f7 0%,#aeb3bb 55%,#dfe2e6 100%);
+  --display:"Saira","Arial Narrow",system-ui,sans-serif;
+  --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:4px;
+}
+body{background:
+  linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px) 0 0/100% 48px,
+  var(--ink)}
+
+/* formas: todo angular */
+.dlg,.card,.empty,.fsearch,.toggle,.select,.chip,.icon-btn,.fav,.nav,.pill-x,.brand-btn,.badge,
+.top-search input,.m-search input,form.trade input,form.trade select,.tray,.sgrid,.fin,.cmp-wrap{border-radius:3px}
+.btn{border-radius:2px;text-transform:uppercase;letter-spacing:.08em;font-family:var(--display);font-weight:700;font-stretch:95%;font-size:14px}
+.btn-gold{background:var(--gold);border-color:var(--gold);color:#0b0b0c;
+  clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);padding-inline:28px}
+.btn-gold:hover{background:#d8ff4a;border-color:#d8ff4a}
+.btn-wa{clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);padding-inline:22px}
+.top .btn-wa{padding-inline:20px}
+@media (max-width:720px){.top .btn-wa{clip-path:none;border-radius:3px}}
+.chip[aria-pressed="true"]{color:var(--gold)}
+.badge.arm{color:var(--gold)}
+.badge.new{background:var(--gold)}
+.toggle i,.toggle i::after{border-radius:2px}
+
+/* encabezado con línea racing */
+header.top{border-bottom:0;box-shadow:inset 0 -1px 0 var(--line)}
+header.top::after{content:"";position:absolute;left:0;bottom:-2px;height:2px;width:100%;
+  background:linear-gradient(90deg,var(--gold) 0 22%,transparent 22% 23%,#7f858e 23% 26%,transparent 26%)}
+
+/* tipografía */
+.eyebrow{font-stretch:100%;letter-spacing:.24em;font-weight:600}
+.eyebrow::before{content:"";display:inline-block;width:22px;height:2px;background:var(--gold);vertical-align:middle;margin:-2px 10px 0 0}
+.hero h1,.inv-head h2,.sell h2{text-transform:uppercase;font-weight:800;font-stretch:78%;letter-spacing:-.005em;line-height:.9}
+.hero h1 em{background:none;color:transparent;-webkit-text-stroke:1.5px var(--gold);}
+.cname,.feature h2,.dinfo h2{font-stretch:88%;text-transform:uppercase;letter-spacing:.005em;font-weight:750}
+.price{font-stretch:92%}
+.stats b{font-stretch:80%;font-size:clamp(34px,4vw,52px);font-weight:800}
+.stats span{text-transform:uppercase;letter-spacing:.16em;font-size:11px}
+.stats{border-top:0;gap:0}
+.stats>div{padding:0 clamp(16px,2.4vw,30px);border-left:2px solid var(--gold)}
+.stats>div+div{border-left-color:var(--line)}
+
+/* héroe a pantalla completa: el destacado es el fondo */
+.hero{min-height:min(86vh,820px);display:flex;align-items:flex-end;padding-block:clamp(90px,14vh,160px) clamp(36px,6vh,64px)}
+.hero::before{display:none}
+.hero .wrap{position:static;display:block;width:100%}
+.hero .wrap>div:first-child{position:relative;z-index:2;max-width:640px;pointer-events:none}
+.hero .wrap>div:first-child a,.hero .wrap>div:first-child label{pointer-events:auto}
+.hero .lead{color:#c9ccd2}
+.feature{position:absolute;inset:0;z-index:1;border-radius:0;border:0;aspect-ratio:auto;background:#000}
+.feature img{object-position:60% 55%;filter:saturate(.9) contrast(1.05)}
+.feature::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,rgba(9,9,10,.96) 0%,rgba(9,9,10,.82) 32%,rgba(9,9,10,.15) 62%,rgba(9,9,10,.35) 100%),
+             linear-gradient(0deg,var(--ink) 0%,transparent 28%)}
+.feature .tag{top:auto;left:auto;right:clamp(16px,4vw,48px);bottom:calc(clamp(36px,6vh,64px) + 168px);z-index:2}
+.feature .shade{z-index:2;left:auto;right:clamp(16px,4vw,48px);bottom:clamp(36px,6vh,64px);width:min(360px,40vw);
+  padding:18px 20px;background:rgba(9,9,10,.74);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-left:3px solid var(--gold)}
+.feature .shade .eyebrow::before{display:none}
+.feature .price{color:var(--fg)}
+@media (max-width:880px){
+  .hero{min-height:0;display:block;padding-block:26px 0}
+  .hero .wrap>div:first-child{max-width:none}
+  .feature{position:relative;inset:auto;aspect-ratio:4/3.3;margin-top:26px;border-radius:3px}
+  .feature::after{background:linear-gradient(0deg,rgba(9,9,10,.9) 0%,transparent 45%)}
+  .feature .shade{left:16px;right:16px;bottom:16px;width:auto}
+  .feature .tag{top:16px;left:16px;right:auto;bottom:auto}
+  .stats>div:first-child{padding-left:14px}
+}
+
+/* franja de marcas */
+.ticker{position:relative;overflow:hidden;border-block:1px solid var(--line);background:#0e0e10;
+  --fade:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:var(--fade);mask-image:var(--fade)}
+.ticker .track{display:flex;width:max-content;animation:tick 38s linear infinite}
+.ticker:hover .track{animation-play-state:paused}
+.ticker button{flex-shrink:0;background:none;border:0;padding:18px 26px;display:flex;align-items:center;gap:26px;
+  font-family:var(--display);font-weight:800;font-stretch:80%;font-size:clamp(20px,2.4vw,30px);text-transform:uppercase;
+  letter-spacing:.02em;color:transparent;-webkit-text-stroke:1px #6d727a;transition:color .2s}
+.ticker button:hover{color:var(--fg);-webkit-text-stroke-color:var(--fg)}
+.ticker button small{font-family:var(--body);font-size:12px;font-weight:700;color:var(--gold);-webkit-text-stroke:0;letter-spacing:.1em}
+.ticker button::after{content:"";width:9px;height:9px;background:var(--gold);transform:rotate(45deg) skew(10deg,10deg);margin-left:26px}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* tarjetas */
+.card{border-color:var(--line);transition:border-color .2s,transform .25s}
+.card:hover{border-color:#3a3d42;transform:translateY(-3px)}
+.card .media::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--gold);transition:width .35s cubic-bezier(.2,.7,.2,1)}
+.card:hover .media::after{width:100%}
+.cbrand{color:var(--gold);letter-spacing:.2em}
+.cfoot{border-top-style:dashed}
+.inv-head h2{font-size:clamp(34px,4.4vw,58px)}
+
+/* permuta */
+.sell{position:relative}
+.sell::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(135deg,rgba(200,240,49,.05) 0 2px,transparent 2px 22px)}
+@media (prefers-reduced-motion:reduce){.ticker .track{animation:none}}
 </style>
 </head>
 <body>
@@ -362,6 +466,8 @@ html:has(dialog[open]){overflow:hidden}
       <article class="feature" id="feature" tabindex="0" aria-label="Ver vehículo destacado"></article>
     </div>
   </section>
+
+  <div class="ticker" aria-label="Marcas en inventario"><div class="track" id="ticker"></div></div>
 
   <section class="inv" id="inventario">
     <div class="wrap">
@@ -829,7 +935,13 @@ $("#trade").addEventListener("submit",e=>{
 });
 
 function openFromHash(){ const h=location.hash.match(/^#v(\d+)$/); if(h) openCar(+h[1]) }
-applyCfg(); renderFeature(); render(); renderTray(); openFromHash();
+function renderTicker(){
+  const n=b=>CARS.filter(c=>c.b===b).length;
+  const one=BRANDS.map(b=>`<button type="button" data-b="${ea(b)}">${b}<small>${n(b)}</small></button>`).join("");
+  $("#ticker").innerHTML=one+one.replace(/<button /g,'<button tabindex="-1" aria-hidden="true" ');
+  $("#ticker").querySelectorAll("button").forEach(x=>x.onclick=()=>{S.brands.clear();S.brands.add(x.dataset.b);render();document.getElementById("inventario").scrollIntoView({behavior:"smooth"})});
+}
+applyCfg(); renderFeature(); renderTicker(); render(); renderTray(); openFromHash();
 </script>
 </body>
 </html>
